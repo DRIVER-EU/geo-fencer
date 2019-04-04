@@ -1,0 +1,13 @@
+
+version: '3'
+services:
+  GeoFencerService:
+    image: driver-eu-geofencer
+    container_name: GeoFencerService
+    hostname: GeoFencerService
+    ports:
+      - "7890:7890"
+    environment:
+      TEST: 3500
+ 
+

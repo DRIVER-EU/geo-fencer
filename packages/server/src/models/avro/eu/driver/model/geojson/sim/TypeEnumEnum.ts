@@ -1,0 +1,16 @@
+export enum TypeEnum {
+    OBJECT,
+    PERSON,
+    CAR,
+    VAN,
+    TRUCK,
+    BOAT,
+    PLANE,
+    HELICOPTER,
+    MOTORCYCLE,
+    DRONE,
+    UNIT,
+    STATION,
+    UNITGROUP,
+    UNKNOWN,
+}

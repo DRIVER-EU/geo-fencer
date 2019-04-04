@@ -1,0 +1,15 @@
+{
+    "server": { 
+        "port": 8109
+    },
+    "kafka": {
+        "kafkaHost": "localhost:3501sadasda",
+        "schemaRegistryUrl": "localhost:3502",
+        "autoRegisterSchemas": true
+    },
+    "simulation_items": {
+        "topics": {
+            "blue": "oke"
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "SimItemDeleted": "simulation_entity_item-deleted",
+    "SimItemOther": "simulation_entity_item-other",
+    "SimItemBlue": "simulation_entity_item-blue",
+    "SimItemRed": "simulation_entity_item-red",
+    "SimItemWhite": "simulation_entity_item-white",
+    "GeoFencerDefinition": "geo-fencer-definition"
+}

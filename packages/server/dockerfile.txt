@@ -1,0 +1,41 @@
+# https://github.com/Microsoft/vscode-recipes/tree/master/Docker-TypeScript
+
+FROM node:8
+
+MAINTAINER DRIVER-EU
+
+LABEL name="GEO FENCER SERVICE"
+LABEL version="1.0"
+LABEL description="GEO FENCER SERVICE"
+
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+# Create app directory
+WORKDIR /home/node/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+USER node
+
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
+
+COPY --chown=node:node . .
+
+# Copy local files to docker:
+# Bundle app source
+
+#.dockerignore holds directories that are skipped
+COPY  . .
+
+RUN npm run build
+
+
+EXPOSE 7890
+
+# ENTRYPOINT ["/bin/sh"]
+# ENTRYPOINT ["npm", "run", "start:prod"]

@@ -1,0 +1,48 @@
+[
+  {
+    "guid": "TEST1",
+    "name": "TEST2",
+    "owner": "",
+    "location": {
+      "altitude": 0,
+      "longitude": 0,
+      "latitude": 0
+    },
+    "orientation": {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 0
+    },
+    "velocity": {
+      "magnitude": 0,
+      "pitch": 0,
+      "yaw": 0
+    },
+    "visibleForParticipant": false,
+    "movable": false,
+    "itemType": null
+  },
+  {
+    "guid": "TESTITEM2",
+    "name": "TEST2",
+    "owner": "",
+    "location": {
+      "altitude": 0,
+      "longitude": 4.254193,
+      "latitude": 52.104876
+    },
+    "orientation": {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 0
+    },
+    "velocity": {
+      "magnitude": 0,
+      "pitch": 0,
+      "yaw": 0
+    },
+    "visibleForParticipant": false,
+    "movable": false,
+    "itemType": null
+  }
+]

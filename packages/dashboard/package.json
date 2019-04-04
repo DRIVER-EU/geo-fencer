@@ -1,0 +1,75 @@
+{
+  "name": "GeoFencerDashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --modern",
+    "build": "vue-cli-service build --modern",
+    "clean": "del-cli dist",
+    "generate-rest-client": "cd swagger_codegenerator && GenerateCodeWithDocker.bat"
+  },
+  "dependencies": {
+    "@csnext/cs-client": "^0.0.109",
+    "@csnext/cs-core": "^0.0.109",
+    "@csnext/cs-form": "^0.0.109",
+    "@csnext/cs-map": "^0.0.109",
+    "@csnext/cs-split-panel": "^0.0.109",
+    "@csnext/cs-timeline": "^0.0.109",
+    "@fortawesome/fontawesome-svg-core": "^1.2.17",
+    "@fortawesome/free-solid-svg-icons": "^5.8.1",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
+    "@mapbox/mapbox-gl-draw": "^1.1.1",
+    "axios": "^0.18.0",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.16",
+    "chroma-js": "^2.0.3",
+    "class-transformer": "^0.2.0",
+    "core-js": "^2.6.5",
+    "date-fns": "^1.30.1",
+    "es6-promise": "^4.2.6",
+    "geojson": "^0.5.0",
+    "handlebars": "^4.1.0",
+    "mapbox-gl": "^0.53.1",
+    "portable-fetch": "^3.0.0",
+    "simplebar-vue": "^0.1.4",
+    "source-map-support": "^0.5.10",
+    "vue": "^2.6.10",
+    "vue-class-component": "^7.0.1",
+    "vue-markdown": "^2.2.4",
+    "vue-property-decorator": "^8.0.0",
+    "vue-router": "^3.0.2",
+    "vuetify": "^1.5.5"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^1.4.32",
+    "@csnext/vue-cli-plugin-cs": "^0.0.109",
+    "@types/chroma-js": "^1.4.1",
+    "@vue/cli-plugin-babel": "^3.4.1",
+    "@vue/cli-plugin-typescript": "^3.4.1",
+    "@vue/babel-preset-app": "^3.4.1",
+    "@vue/cli-service": "^3.4.1",
+    "dojo-typings": "^1.11.9",
+    "raw-loader": "^1.0.0",
+    "typescript": "^3.3.3333",
+    "vue-template-compiler": "^2.6.8",
+    "@types/node": "^11.11.1",
+    "@types/vue-markdown": "^2.2.1",
+    "@types/mapbox-gl": "^0.51.4",
+    "babel-runtime": "^6.26.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "build": {
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  }
+}

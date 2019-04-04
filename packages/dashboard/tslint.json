@@ -1,0 +1,12 @@
+{
+    "extends": "tslint:latest",
+    "linterOptions": {
+        "exclude": [
+            "dist",
+            "node_modules",
+            "src/generated_rest_api",
+            "swagger_codegenerator",
+            "lib/*generated.js"
+        ]
+    }
+  }

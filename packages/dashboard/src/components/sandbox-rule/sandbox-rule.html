@@ -1,0 +1,29 @@
+<div>
+    <form id="ruleForm">
+        <b-container>
+            <b-row>
+                <b-col>Rule</b-col>
+                <b-col cols="11"><textarea v-model="expressionText" placeholder=""></textarea></b-col>
+            </b-row>
+            <b-row>
+                <b-col>Test Data </b-col>
+                <b-col cols="11"><textarea class="TestDataTextbox" v-model="testData" placeholder=""></textarea></b-col>
+            </b-row>
+            <b-row>
+                <b-col> <button v-on:click="TestRule" class="button">Test rule</button></b-col>
+            </b-row>
+        </b-container>
+    </form>
+    <div v-if="restCallCompleted">
+        <b-card>
+            <div v-if="expressionHasErrors">
+                <b-alert show variant="danger" class="mb-2">{{expressionError}}</b-alert>
+            </div>
+            <div v-if="!expressionHasErrors">
+                <h3>Rule result:  {{expressionOutcome ? "is a match" : "is not a match"}}</h3>
+                <b>{{substitudedExpression}}</b>
+            </div>
+        </b-card>
+    </div>
+    <b-alert v-if="errorMsg" show variant="danger" class="mb-2">{{errorMsg}}</b-alert>
+</div>

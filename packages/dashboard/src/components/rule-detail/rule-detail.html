@@ -1,0 +1,58 @@
+<div>
+
+    <h4>Detail rule '{{rule.UserAssignedId}}'</h4>
+
+    <div v-if="!rule.IsRuleValid">
+        <b-alert show variant="danger" class="mb-2">{{rule.RuleError}}</b-alert>
+    </div>
+    <div v-if="rule.IsRuleValid">
+        <div v-if="!restcallInProgress">
+            <b-container>
+                <b-table hover show-empty stacked="md" :items="ruleDetails" :fields="ruleDetailTableColumns"
+                    select-mode="single">
+                    <template slot="IsExpressionValid" slot-scope="row">
+                        <div v-if="row.item.IsExpressionValid">
+                            <font-awesome-icon :icon="['fas', 'check-circle']"  />
+                        </div>
+                        <div v-if="!row.item.IsExpressionValid">
+                            <font-awesome-icon :icon="['fas', 'times-circle']"  />
+                        </div>
+                    </template>
+                    <template slot="InGeographicArea" slot-scope="row">
+                        <div v-if="row.item.InGeographicArea">
+                            <font-awesome-icon :icon="['fas', 'check-circle']"  />
+                        </div>
+                        <div v-if="!row.item.InGeographicArea">
+                            <font-awesome-icon :icon="['fas', 'times-circle']"  />
+                        </div>
+                    </template>
+                    <template slot="actions" slot-scope="row">
+                        <b-button size="sm" @click="row.toggleDetails">
+                            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+                        </b-button>
+                    </template>
+
+                    <template slot="row-details" slot-scope="row">
+
+                        <b-card>
+                            <ul>
+                                <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                            </ul>
+                        </b-card>
+                    </template>
+                </b-table>
+                <b-row>
+                    <b-col md="6">
+                        <b-pagination v-model="currentPage" :total-rows="ruleDetails.length" :per-page="perPage">
+                        </b-pagination>
+                    </b-col>
+                </b-row>
+            </b-container>
+        </div>
+
+        <div v-if="restcallInProgress">
+            <b-spinner class="m-2" label="Loading">Loading...</b-spinner>
+        </div>
+    </div>
+</div>
+</div>
