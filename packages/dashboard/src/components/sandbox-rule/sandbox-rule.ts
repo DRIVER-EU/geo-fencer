@@ -46,7 +46,7 @@ export class SandboxRule extends WidgetBase {
 
     public expressionText: string = "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID =  'TEST2' ) AND ObjectType = 'Vehicle'";
     public testData : string = simItem;
-    public errorMsg? : string = undefined;
+    public errorMsg : string = "";
     public restCallCompleted = false;
     public expressionHasErrors = false;
     public substitudedExpression = "";
@@ -61,7 +61,7 @@ export class SandboxRule extends WidgetBase {
         };
         this.restClient.doTestRule(ruleData)
             .then((testResult: ResultTestRule) => {
-                this.errorMsg = undefined;
+                this.errorMsg = "";
                 this.expressionHasErrors = testResult.HasError;
                 this.substitudedExpression = testResult.Substituded;
                 this.expressionError = testResult.ErrorMsg;

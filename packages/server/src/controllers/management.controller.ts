@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Param, Req, Put, Body } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiImplicitParam, ApiUseTags, ApiImplicitBody } from '@nestjs/swagger';
-import { RulesResult, AnalyseRuleResult, TestRule, ResultTestRule, FakeGeoJSONEnvelopeInterface, ResultSetGeofencerDef, SimulationTestData, ResultSimulationTestData } from '../models/rest/rest-models';
+import { StatusResult, RulesResult, AnalyseRuleResult, TestRule, ResultTestRule, FakeGeoJSONEnvelopeInterface, ResultSetGeofencerDef, SimulationTestData, ResultSimulationTestData } from '../models/rest/rest-models';
 import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
 import { EvaluateGeoFencerExpression } from './../models/geofencer/EvaluateGeoFencerExpression';
 import { ItemInterface } from 'src/models/avro/eu/driver/model/sim/entity/Item';
@@ -33,7 +33,7 @@ export class ManagementController {
     description: 'Returns the rules',
     type: RulesResult
   })
-  @Get('')
+  @Get('Rules')
   async GetRules(): Promise<RulesResult> {
     if (this.service === null) throw new Error("Not initialized (yet)");
     return await this.service.GetRules();
@@ -157,5 +157,23 @@ export class ManagementController {
       } else result.ErrorMsg = error;
     }
     return result;
+  }
+
+  /*************************************************************************************************************/
+  @ApiOperation({
+    title: 'Get server status',
+    description: 'Get server status',
+    operationId: 'GetStatus'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the status',
+    type: StatusResult
+  })
+  @Get('Status')
+  async GetStatus(): Promise<StatusResult> {
+    if (this.service === null) throw new Error("Not initialized (yet)");
+    return await this.service.GetStatus();
+
   }
 }

@@ -21,11 +21,16 @@
     text-decoration: line-through;
 }
 
-.analyseRule {
-    /*background: silver;*/
-}
+/* .analyseRule {
+    background: silver;
+} */
 
-.text-reader {
+a { color: black; text-decoration: none; /* no underline */ }
+a:visited {color:black; text-decoration: none;}  /* visited link */
+a:hover {color:black; text-decoration: none;}  /* mouse over link */
+a:active {color:black; text-decoration: none;}  /* selected link */
+
+.geofencerButton {
     position: relative;
     overflow: hidden;
     display: inline-block;
@@ -36,7 +41,7 @@
     padding: 8px 12px;
     cursor: pointer;
   }
-  .text-reader input {
+  .geofencerButton input {
     position: absolute;
     top: 0;
     left: 0;

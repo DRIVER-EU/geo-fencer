@@ -1,6 +1,4 @@
 
-import * as npmPackage from '../package.json';
-
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -8,17 +6,15 @@ import { AppModule } from './app.module';
 
 // Services
 import { ILogService, LogService } from './services/log-service'
-import { ISimulationService, SimulationService } from './services/simulation-service';
-import { IGeoFencerService, GeoFencerService } from './services/geo-fencer-service';
-import { IConfigService, ConfigService } from './services/config-service';
 
 import { ITestBedAdapterSettings, TestBedKafkaService } from './services/test-bed-kafka-service';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { Express } from 'express';
 import { join } from 'path';
 import { Inject } from '@nestjs/common';
 import { GeofencerProvider } from './geofencer-provider';
 var path = require('path');
-
+var express = require('express');
 
 /* Geo Fencer server 
 
@@ -39,6 +35,7 @@ export class GeoFencerServer {
     this.StartNestServerAsync()
       .then(server => {
         this.provider = server.get(GeofencerProvider); // Injection cannot be done in constructor
+        this.provider.SetServer(server);
       });
 
 
@@ -74,8 +71,9 @@ export class GeoFencerServer {
     // Serve the public folder directory
     const publicDirectory: string = path.join(process.cwd(), 'public');
     //const publicDirectory = join(__dirname, '..', 'public');
-    app.useStaticAssets(publicDirectory);
-    console.log(`Files in ${publicDirectory} hosted in http://localhost:${configService.GetNestServerPortNumber()}/public`);
+    
+    app.use('/public', express.static(publicDirectory));
+    console.log(`'http://localhost:${configService.GetNestServerPortNumber()}/public': Host files from '${publicDirectory}'`);
 
     // Create swagger documentation
     const options = new DocumentBuilder()
@@ -86,8 +84,8 @@ export class GeoFencerServer {
       .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document); // http://<host>:<port>/api
-    console.log(`Swagger doc: http://localhost:${configService.GetNestServerPortNumber()}/api `);
-    console.log(`Download open api definition: http://localhost:${configService.GetNestServerPortNumber()}/api-json `);
+    console.log(`'http://localhost:${configService.GetNestServerPortNumber()}/api': OpenApi (swagger) documentation.`);
+    console.log(`'http://localhost:${configService.GetNestServerPortNumber()}/api-json': OpenApi (swagger) definition. `);
 
     // Start server
     await app.listen(configService.GetNestServerPortNumber());

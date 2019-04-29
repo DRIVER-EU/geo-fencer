@@ -1,7 +1,8 @@
+import * as npmPackage from './../../package.json';
 import { ItemState } from './../models/rest/rest-models';
 import { Injectable, Inject, Scope } from '@nestjs/common';
 import { GeofencerProvider } from './../geofencer-provider';
-import { GeoFencerRule, RulesResult, AnalyseRuleResult, ResultTestRule } from '../models/rest/rest-models';
+import { StatusResult, GeoFencerRule, RulesResult, AnalyseRuleResult, ResultTestRule } from '../models/rest/rest-models';
 import { GeoJSONEnvelopeInterface } from 'src/models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
 import { ItemInterface } from 'src/models/avro/eu/driver/model/sim/entity/Item';
 
@@ -69,6 +70,16 @@ export class ManagementService {
 
         const x : RulesResult = { 
             Rules: result
+         };  
+        return x;
+    }
+
+    async GetStatus(): Promise<StatusResult> {
+        const x : StatusResult = { 
+            Description: npmPackage.description,
+            Version:  npmPackage.version,
+            KafkaServer: this.provider.TestBedKafkaService.settings.kafkaHost,
+            SchemaRegistryUrl: this.provider.TestBedKafkaService.settings.schemaRegistryUrl,
          };  
         return x;
     }

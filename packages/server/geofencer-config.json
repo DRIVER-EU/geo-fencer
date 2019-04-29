@@ -1,9 +1,10 @@
 {
-    "server": { 
-        "port": 8109
+    "description": "Geo fencer default config",
+	"server": { 
+        "port": 7890
     },
     "kafka": {
-        "kafkaHost": "localhost:3501sadasda",
+        "kafkaHost": "localhost:3501",
         "schemaRegistryUrl": "localhost:3502",
         "autoRegisterSchemas": true
     },

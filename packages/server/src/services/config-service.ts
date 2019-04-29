@@ -2,6 +2,7 @@
 import { EventEmitter } from 'events';
 import { ITestBedAdapterSettings } from './test-bed-kafka-service'
 
+
 /* 
 
 Service to get all configuration.
@@ -9,8 +10,12 @@ Service to get all configuration.
 The package https://www.npmjs.com/package/nconf is used for this.
 
 */
-
+const Path = require('path');
 const nconf = require('nconf');
+const Yargs = require('yargs');
+const fs = require('fs')
+
+// const CONFIG_DIR = Path.join(__dirname, '../config');
 
 // Topic names used
 export interface ITopicNames {
@@ -19,7 +24,8 @@ export interface ITopicNames {
     SimulationItemTopicRed : string,
     SimulationItemTopicWhite : string,
     SimItemDeleted : string,
-    GeoFencerDefinition : string
+    GeoFencerDefinition : string,
+    RuleFired : string
 }
 
 export interface IConfigService {
@@ -40,22 +46,57 @@ export class ConfigService extends EventEmitter implements IConfigService {
         //   2. Environment variables
         //   3. A file located at './geofencer-config.json'
 
-        const cfgFile = `${process.cwd()}\\packages\\server\\geofencer-config.json`;
-        const cfgTopicnamesFile = `${process.cwd()}\\packages\\server\\geofencer-topicnames-config.json`;
-        console.log(`Use configuration file '${cfgFile}'.`);
+        // Path.join(__dirname, '../config');
+        //const cfgFileName= "geofencer-config.json";
+        const cfgFileName= "geofencer-config.json";
+        
+        const cfgTopicnamesFile = `${process.cwd()}\\geofencer-topicnames-config.json`;
+        
         nconf
-        .argv()
+        .argv({
+            "c": {
+              alias: 'config',
+              describe: 'Set configuration file',
+              demand: false,
+              default: cfgFileName,
+              parseValues: true,
+              transform: function(obj : any) {
+                return obj;
+              }
+            }
+          })
         .env()
-        .file({ file: cfgFile })
-        .file({ file: cfgTopicnamesFile })
+        .file('generic', { file: `${process.cwd()}\\${nconf.get('config')}` })
+        .file('topics', { file: cfgTopicnamesFile })
         .defaults({
             'kafka:clientid': "example"
         });
-        
+       
+        const cfgFile = `${process.cwd()}\\${nconf.get('config')}`;
+        console.log(`Use configuration file '${cfgFile}'.`);
+
+        try {
+            if (!fs.existsSync(cfgFile)) console.error("Configuration file not found.");
+          } catch(err) {
+            
+          }
+
+
+        // Set general CLI options
+    let yargs = Yargs
+    .usage('Usage: npm run start:prod ')
+    .example('npm run start:prod --config geofencer-config-custom.json', 'Use non default config file.')
+    .help('h')
+    .alias('h', 'help')
+    .epilog('Driver-eu')
+    .argv;
+      
+    
+
     }
 
     GetNestServerPortNumber() : number {
-        return nconf.get('ServerPort') || 7890;
+        return nconf.get('server:port') || 7890;
     }
 
     GetKafkaSettings(): ITestBedAdapterSettings {
@@ -79,6 +120,7 @@ export class ConfigService extends EventEmitter implements IConfigService {
             SimulationItemTopicRed:  nconf.get('SimItemRed') || "simulation_entity_item-red",
             SimulationItemTopicWhite:  nconf.get('SimItemWhite') || "simulation_entity_item-white",
             GeoFencerDefinition :  nconf.get('GeoFencerDefinition') || "geo-fencer-definition",
+            RuleFired:  nconf.get('RuleFired') || "rule-fired"
         };
         return result;
     }

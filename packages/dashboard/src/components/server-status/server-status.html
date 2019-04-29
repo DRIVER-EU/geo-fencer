@@ -1,0 +1,47 @@
+<div>
+  <button v-on:click="UpdateStatus">
+    <font-awesome-icon :icon="['fas', 'sync-alt']" size="0.5x" /></button>
+  <div v-if="!restCallCompleted">
+    Loading data
+  </div>
+  <div v-if="restCallCompleted">
+    <b-card>
+      <div class="container">
+        <div class="row">
+          <div class="col-1">
+            Description
+          </div>
+          <div class="col-6">
+            {{status.Description}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1">
+            Version
+          </div>
+          <div class="col-6">
+            {{status.Version}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1">
+            Kafka server
+          </div>
+          <div class="col-6">
+            {{status.KafkaServer}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1">
+            Kafka schema registry
+          </div>
+          <div class="col-6">
+            {{status.SchemaRegistryUrl}}
+          </div>
+        </div>
+    </b-card>
+  </div>
+  <div v-if="errorMsg">
+    <b-alert show variant="danger" class="mb-2">{{errorMsg}}</b-alert>
+  </div>
+</div>

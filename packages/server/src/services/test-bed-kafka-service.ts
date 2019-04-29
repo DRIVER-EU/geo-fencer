@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { TestBedAdapter, Logger, LogLevel, IAdapterMessage } from 'node-test-bed-adapter';
-import { geoFencerDef, testItemData, testItemData1 } from './../testdata/testdata'
+import { geoFencerDef } from './../testdata/testdata'
+import { RuleFired } from './../models/rest/rest-models'
 
 // Services: 
 import { IConfigService, ITopicNames } from './config-service';
@@ -29,6 +30,7 @@ export interface ITestBedAdapterSettings {
   schemaRegistryUrl: string;
   autoRegisterSchemas: boolean;
   kafkaClientId: string;
+  
 }
 
 export interface ITestBedKafkaService {
@@ -41,6 +43,9 @@ export interface ITestBedKafkaService {
 
   ConnectToKafka() : void;
   GenerateTestMessages() : void;
+  SubscribedTopics : String; 
+  Publish(topicInfo : RuleFired) : void;
+  settings: ITestBedAdapterSettings;
 }
 
 export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaService {
@@ -69,9 +74,9 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
       schemaFolder: 'schemas',
       consume: [
         { topic: this.topicNames.SimulationItemTopicOther },
-        // { topic: this.topicNames.SimulationItemTopicRed },
-        //  { topic: this.topicNames.SimulationItemTopicBlue },
-        //  { topic: this.topicNames.SimulationItemTopicWhite }
+        { topic: this.topicNames.SimulationItemTopicRed },
+        { topic: this.topicNames.SimulationItemTopicBlue },
+        { topic: this.topicNames.SimulationItemTopicWhite }
       ],
       produce: [this.topicNames.SimulationItemTopicOther],
       logging: {
@@ -92,6 +97,9 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     this.adapter.connect();
   }
 
+  public get settings() {
+    return this.kafkaSettings;
+  }
 
   public GenerateTestMessages() : void {
     const json = JSON.stringify(geoFencerDef);
@@ -124,4 +132,13 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
         break;
     }
   }
+
+  public get SubscribedTopics() {
+    return "";
+  }
+
+  public Publish(topicInfo : RuleFired) : void {
+    
+  }
+
 }

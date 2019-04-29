@@ -2,7 +2,7 @@ import { ManagementService } from './controllers/management.service';
 import { Module } from '@nestjs/common';
 import { ManagementController } from './controllers/management.controller';
 import { GeofencerProvider } from './geofencer-provider';
-
+import { NotificationsModule } from './notifications/notification-module'
 
 
 export const GeofencerProviderDef = {
@@ -14,9 +14,9 @@ export const GeofencerProviderDef = {
 
 
 @Module({
-  imports: [],
+  imports: [ NotificationsModule],
   controllers: [ManagementController],
-  providers: [ManagementService, GeofencerProviderDef],
+  providers: [ManagementService, GeofencerProviderDef ],
 
 })
 export class AppModule {}

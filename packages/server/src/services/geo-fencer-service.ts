@@ -2,6 +2,7 @@
 
 import { TriggerArea } from './../models/geofencer/TriggerArea';
 import { EventEmitter } from 'events';
+import { RuleFired } from './../models/rest/rest-models'
 import { ItemInterface, Item } from './../models/avro/eu/driver/model/sim/entity/Item'
 import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope'
 import { GeoFencerDefinition } from '../models/geofencer/GeoFencerDefinition'
@@ -27,7 +28,7 @@ export interface IGeoFencerService {
   GetRule(triggerAreaId: string): TriggerArea | undefined | null;
 
   // Fires when Sim item state changed
-  on(event: 'stateChangeSimulationItem', listener: (ruleId: string, simItemGuid: string, hit: boolean, initial: boolean) => void): this;
+  on(event: 'stateChangeSimulationItem', listener: (ruleTrigger: RuleFired) => void): this;
 }
 
 export class GeoFencerService extends EventEmitter implements IGeoFencerService {
@@ -105,13 +106,18 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
     this.geoFencerDefintions.forEach((geoFencerDef: GeoFencerDefinition) => {
       geoFencerDef.ValidateAgainstAllRules(simItem,
         {
+          // Only called on change
           OnChangeTrigger: (rule: TriggerArea, simItem: ItemInterface, hit: boolean, initial: boolean) => {
             if (initial) {
               this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ""} ${hit ? " has match" : "has no match"} `);
             } else {
               this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ""} ${hit ? " changed to has match" : " changed to has no match"} `);
             }
-            this.emit('stateChangeSimulationItem', rule.TriggerAreaId, simItem.guid, hit, initial);
+            if ((hit) || (!hit && !initial)) {
+              const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial);
+              this.kafkaService.Publish(fireInfo);
+              this.emit('stateChangeSimulationItem', fireInfo);
+            } 
           }
         }, isTestData);
     });

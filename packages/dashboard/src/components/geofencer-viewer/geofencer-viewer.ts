@@ -1,17 +1,22 @@
+import './geofencer-viewer.css';
+import { saveAs } from 'file-saver';
+import { RuleFireEvents } from './../rule-fire-events/rule-fire-events'
+import { ServerStatus } from './../server-status/server-status';
 import { SandboxRule } from './../sandbox-rule/sandbox-rule';
 import { RuleDetail } from './../rule-detail/rule.detail';
 import { RulesResult, AnalyseRuleResult } from './../../generated_rest_api/api';
 import { WidgetBase, AppState } from '@csnext/cs-client';
-import './geofencer-viewer.css';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { MainProject } from './../../datasources/MainProject';
 import { GeoFencerRule } from './../../generated_rest_api/index';
-import { GeoFencerDefinition } from '../geofencer-definition/geofencer-definition';
+
+import { GEOFENCER_BASE_PATH } from './../../Config';
+var FileSaver = require('file-saver');
 
 @Component({
   name: 'geofencer-viewer',
-  components: { GeoFencerDefinition, SandboxRule, RuleDetail },
+  components: {  SandboxRule, RuleDetail, ServerStatus, RuleFireEvents },
   template: require('./geofencer-viewer.html')
 } as any)
 export class GeoFencerViewer extends WidgetBase {
@@ -25,6 +30,16 @@ export class GeoFencerViewer extends WidgetBase {
   private selectedRule : GeoFencerRule | null = null;
   public currentPage = 1;
   public perPage = 5;
+
+  get ExampleRulesUrl() : string {
+    return `${GEOFENCER_BASE_PATH}/public/geofencerdef.json`;
+  }
+
+  get ExampleTestData() : string {
+    return `${GEOFENCER_BASE_PATH}/public/simitems.json`;
+  }
+ 
+
 
   get totalRows() {
     return (this.rulesResult.Rules.length);
@@ -42,6 +57,7 @@ export class GeoFencerViewer extends WidgetBase {
 
   constructor() {
     super();
+    
   }
 
   @Watch('widget.content', { deep: false })
@@ -55,8 +71,6 @@ export class GeoFencerViewer extends WidgetBase {
     this.SelectedRule = selectedRules[0];
   }
 
-
-
   // Get all rules from GeoFencer service    
   private async GetRulesFromServer() {
     this.errorMsg = null;
@@ -69,7 +83,7 @@ export class GeoFencerViewer extends WidgetBase {
           this.rulesResult.Rules.push(...ruleSet.Rules);
         })
         .catch(error => {
-          this.errorMsg = `Communication failure with server.`;
+          this.errorMsg = `Communication failure with server (${this.provider ? this.provider.GetBaseServerUrl() : 'no server defined'}).`;
         })
         .finally(() => this.isLoading = false);
     } else this.errorMsg = "No provider";
@@ -125,6 +139,15 @@ export class GeoFencerViewer extends WidgetBase {
       }
     }
     reader.readAsText(file);
+  }
+
+
+  DownloadExampleGeofencerDefinition() {
+    FileSaver.saveAs(this.ExampleRulesUrl, "geofencer-sample-rules.json");
+  }
+
+  DownloadSampleData() {
+    FileSaver.saveAs(this.ExampleTestData, "test_data.json");
   }
 
 }

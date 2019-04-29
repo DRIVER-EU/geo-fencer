@@ -1,5 +1,24 @@
 import { ApiModelProperty } from "@nestjs/swagger";
 
+
+export class RuleFired {
+
+    constructor(ruleId: string, simItemGuid : string, hit : boolean, initial : boolean ){ 
+        this.ruleId = ruleId;
+        this.simItemGuid = simItemGuid;
+        this.hit = hit;
+        this.initial = initial;
+    }
+
+    @ApiModelProperty({ required: true })
+    public ruleId: string;
+    @ApiModelProperty({ required: true })
+    public simItemGuid: string;
+    @ApiModelProperty({ required: true })
+    public hit: boolean;
+    @ApiModelProperty({ required: true })
+    public initial: boolean;
+}
 export class GeoFencerRule {
 
 
@@ -19,6 +38,18 @@ export class GeoFencerRule {
     public RuleError: string;
 
 
+
+}
+
+export class StatusResult {
+    @ApiModelProperty({ required: true })
+    public Description: String;
+    @ApiModelProperty({ required: true })
+    public Version: String;
+    @ApiModelProperty({ required: true })
+    public KafkaServer: String;
+    @ApiModelProperty({ required: true })
+    public SchemaRegistryUrl: String;
 
 }
 

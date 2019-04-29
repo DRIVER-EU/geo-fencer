@@ -3,7 +3,6 @@ import './rule-detail.css';
 import Component from 'vue-class-component';
 import { WidgetBase } from '@csnext/cs-client';
 import { GeoFencerRule,  ItemState } from './../../generated_rest_api/api'
-import { GEOFENCER_BASE_PATH } from './../../Config';
 import { Prop, Watch } from 'vue-property-decorator';
 import { MainProject } from './../../datasources/MainProject';
 
@@ -15,8 +14,7 @@ import { MainProject } from './../../datasources/MainProject';
 export class RuleDetail extends WidgetBase {
 
 
-    private restcallInProgress = false;
-
+    private restcallInProgress = false; // Set with Vue.set
     public ruleDetails: Array<ItemState> = [];
     public currentPage = 1;
     public perPage = 5;

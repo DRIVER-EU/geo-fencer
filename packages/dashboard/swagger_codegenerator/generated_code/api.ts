@@ -239,6 +239,38 @@ export interface SimulationTestData {
 /**
  * 
  * @export
+ * @interface StatusResult
+ */
+export interface StatusResult {
+    /**
+     * 
+     * @type {string}
+     * @memberof StatusResult
+     */
+    Description: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StatusResult
+     */
+    Version: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StatusResult
+     */
+    KafkaServer: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StatusResult
+     */
+    SchemaRegistryUrl: string;
+}
+
+/**
+ * 
+ * @export
  * @interface TestRule
  */
 export interface TestRule {
@@ -331,7 +363,30 @@ export const ManagementApiFetchParamCreator = function (configuration?: Configur
          * @throws {RequiredError}
          */
         getRules(options: any = {}): FetchArgs {
-            const localVarPath = `/management`;
+            const localVarPath = `/management/Rules`;
+            const localVarUrlObj = url.parse(localVarPath, true);
+            const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+            return {
+                url: url.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get server status
+         * @summary Get server status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStatus(options: any = {}): FetchArgs {
+            const localVarPath = `/management/Status`;
             const localVarUrlObj = url.parse(localVarPath, true);
             const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
             const localVarHeaderParameter = {} as any;
@@ -349,7 +404,7 @@ export const ManagementApiFetchParamCreator = function (configuration?: Configur
         },
         /**
          * 
-         * @summary Send simulation items to service (simulate kafka messages)
+         * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -477,8 +532,26 @@ export const ManagementApiFp = function(configuration?: Configuration) {
             };
         },
         /**
+         * Get server status
+         * @summary Get server status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStatus(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<StatusResult> {
+            const localVarFetchArgs = ManagementApiFetchParamCreator(configuration).getStatus(options);
+            return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
+                return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
+                    if (response.status >= 200 && response.status < 300) {
+                        return response.json();
+                    } else {
+                        throw response;
+                    }
+                });
+            };
+        },
+        /**
          * 
-         * @summary Send simulation items to service (simulate kafka messages)
+         * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -553,8 +626,17 @@ export const ManagementApiFactory = function (configuration?: Configuration, fet
             return ManagementApiFp(configuration).getRules(options)(fetch, basePath);
         },
         /**
+         * Get server status
+         * @summary Get server status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStatus(options?: any) {
+            return ManagementApiFp(configuration).getStatus(options)(fetch, basePath);
+        },
+        /**
          * 
-         * @summary Send simulation items to service (simulate kafka messages)
+         * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -618,8 +700,19 @@ export class ManagementApi extends BaseAPI {
     }
 
     /**
+     * Get server status
+     * @summary Get server status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ManagementApi
+     */
+    public getStatus(options?: any) {
+        return ManagementApiFp(this.configuration).getStatus(options)(this.fetch, this.basePath);
+    }
+
+    /**
      * 
-     * @summary Send simulation items to service (simulate kafka messages)
+     * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
      * @param {SimulationTestData} SimulationTestData 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

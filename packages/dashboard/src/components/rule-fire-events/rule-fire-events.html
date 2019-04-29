@@ -1,0 +1,9 @@
+ <div>
+ <b-table
+      :items="rulesFired"
+      :fields="fields">
+    <template slot="ruleId" slot-scope="row">
+      <b> {{row.item.ruleId}}</b>
+    </template>
+  </b-table>
+  </div>

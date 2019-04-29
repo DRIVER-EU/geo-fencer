@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { CsPlugin, CsApp } from "@csnext/cs-client";
 import { GeoFencerProject } from './GeoFencerProjectLayout';
-
+import { NotificationService } from './services/notification_service'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -27,12 +27,16 @@ Vue.use(CsPlugin);
 
 // initialize CsApp component as main app component
 const app = new Vue({
-  render: h => h(CsApp as any)
+  render: h => h(CsApp as any),
+  
 }).$mount("#geofencer_app"); // See .\dashboard\public\index.html
+
 
 
 // init cs with project definition
 app.$cs.init(GeoFencerProject);
+
+NotificationService.getInstance().connect();
 
 // for console debugging purposes
 (<any>window).cs = app.$cs;

@@ -13,6 +13,10 @@ export class MainProject implements IDatasource {
     this.restClient = new ManagementApi(undefined,  url, undefined);
   }
 
+  public GetBaseServerUrl() : string {
+    return GEOFENCER_BASE_PATH;
+  }
+
   public async GetAnalyseRule(ruleId : string) {
     // Do REST call to server
     return await this.restClient.getAnalyseRule(ruleId);
@@ -21,6 +25,10 @@ export class MainProject implements IDatasource {
   public async GetRules() {
     // Do REST call to server
     return await this.restClient.getRules();
+  }
+
+  public async GetStatus() {
+    return await this.restClient.getStatus();
   }
 
 
