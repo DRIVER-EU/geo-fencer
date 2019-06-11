@@ -1,9 +1,9 @@
-import { ApiModelProperty } from "@nestjs/swagger";
+import { ApiModelProperty } from '@nestjs/swagger';
 
 
 export class RuleFired {
 
-    constructor(ruleId: string, simItemGuid : string, hit : boolean, initial : boolean ){ 
+    constructor(ruleId: string, simItemGuid: string, hit: boolean, initial: boolean ) {
         this.ruleId = ruleId;
         this.simItemGuid = simItemGuid;
         this.hit = hit;

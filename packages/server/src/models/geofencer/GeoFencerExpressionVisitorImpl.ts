@@ -1,5 +1,5 @@
-import { GeoFencerExpressionVisitor } from '../../antlr/generated/GeoFencerExpressionVisitor'
-import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
+import { GeoFencerExpressionVisitor } from '../../antlr/generated/GeoFencerExpressionVisitor';
+import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { ParserRuleContext } from 'antlr4ts/ParserRuleContext';
 
 import {
@@ -16,32 +16,32 @@ import {
   BinaryContext,
   BoolContext,
   StringExpressionContext
-} from "../../antlr/generated/GeoFencerExpressionParser";
-import { ItemInterface } from '../avro/eu/driver/model/sim/entity/Item'
+} from '../../antlr/generated/GeoFencerExpressionParser';
+import { ItemInterface } from '../avro/eu/driver/model/sim/entity/Item';
 import { GeoFencerExpressionError } from './GeofencerExceptions';
 
 enum ExpressionProperty {
-  Unknown = "Unknown",
-  Name = "Name",
-  Guid = "Guid",
-  ObjectType = "ObjectType"
+  Unknown = 'Unknown',
+  Name = 'Name',
+  Guid = 'Guid',
+  ObjectType = 'ObjectType'
 }
 
 const PropertyNames =
   [
-    "Name",
-    "Guid",
-    "ObjectType"
+    'Name',
+    'Guid',
+    'ObjectType'
   ];
 
 enum ExpressionOperator {
-  Unknown = "Unknown",
-  Equals = "Equals",
-  GreaterEquals = "GreaterEquals",
-  Greater = "Greater",
-  Less = "Less",
-  LessEquals = "LessEquals",
-  Like = "Like"
+  Unknown = 'Unknown',
+  Equals = 'Equals',
+  GreaterEquals = 'GreaterEquals',
+  Greater = 'Greater',
+  Less = 'Less',
+  LessEquals = 'LessEquals',
+  Like = 'Like'
 
 }
 
@@ -52,7 +52,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
 
   private simItem: ItemInterface;
 
-  private substitutedExpression: string = "";
+  private substitutedExpression: string = '';
 
   constructor(itemSim: ItemInterface) {
     super();
@@ -65,18 +65,18 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
   }
 
   visitParenExpression(ctx: ParenExpressionContext): boolean {
-    this.substitutedExpression += " ( ";
+    this.substitutedExpression += ' ( ';
     let result = super.visitChildren(ctx);
-    this.substitutedExpression += " ) ";
+    this.substitutedExpression += ' ) ';
     return result;
   }
 
   visitNotExpression(ctx: NotExpressionContext) {
-    this.substitutedExpression += " not ";
+    this.substitutedExpression += ' not ';
     return !(super.visit(ctx.expression()));
   }
 
-  // Return the value of the literial string 
+  // Return the value of the literial string
   visitStringExpression(ctx: StringExpressionContext) {
     // remove quates
     return ctx.text.substring(1, ctx.text.length - 1);
@@ -97,12 +97,18 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
         case ExpressionProperty.Guid:
           switch (operator) {
             case ExpressionOperator.Equals:
-              //case ExpressionOperator.Like:
               if (ctx._rightside instanceof StringExpressionContext) {
                 const propertyValue = (this.visit(ctx._rightside));
                 let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
                 return result;
               } else this.ThrowException(ctx, `Can only compare ${propertyName} with text value.`);
+              break;
+            case ExpressionOperator.Like:
+                if (ctx._rightside instanceof StringExpressionContext) {
+                  const propertyValue = (this.visit(ctx._rightside));
+                  let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
+                  return result;
+                } else this.ThrowException(ctx, `Can only like ${propertyName} with text value.`);
               break;
             default:
               this.ThrowException(ctx, `Operator '${operator}' not allowed for ${propertyName}.`);
@@ -124,7 +130,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
           break;
         case ExpressionProperty.Unknown:
         default:
-          this.ThrowException(ctx, `The property name ${propertyName} is not recognised (allowed property names: [${PropertyNames.join(", ")}]).`);
+          this.ThrowException(ctx, `The property name ${propertyName} is not recognised (allowed property names: [${PropertyNames.join(', ')}]).`);
           break;
       }
     }
@@ -137,17 +143,17 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
 
 
 
-  // AND / OR 
+  // AND / OR
   visitBinaryExpression(ctx: BinaryExpressionContext): boolean {
     if (ctx._expressionoperator.AND() != null) {
       let resultLeft = super.visit(ctx._leftside);
-      this.substitutedExpression += " AND ";
+      this.substitutedExpression += ' AND ';
       let resultRight = super.visit(ctx._rightside);
       return resultLeft && resultRight;
     }
     else if (ctx._expressionoperator.OR() != null) {
       let resultLeft = super.visit(ctx._leftside);
-      this.substitutedExpression += " OR ";
+      this.substitutedExpression += ' OR ';
       let resultRight = super.visit(ctx._rightside);
       return resultLeft || resultRight;
     }
@@ -157,7 +163,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
 
   visitBoolExpression(ctx: BoolExpressionContext) {
     return true;
-    //return Boolean.valueOf(ctx.getText());
+    // return Boolean.valueOf(ctx.getText());
   }
 
   // Return the identifier name (property name)
@@ -169,14 +175,14 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
   visitDecimalExpression(ctx: DecimalExpressionContext) {
     console.log(`Value is = ${ctx.DECIMAL().toString()}.`);
     return false; // ctx.DECIMAL().toString();
-    //return ctx.DECIMAL().getText();
+    // return ctx.DECIMAL().getText();
   }
 
   // Called when start validation of expression
   visitParse(ctx: ParseContext): boolean {
-    this.substitutedExpression = "";
+    this.substitutedExpression = '';
     let result = super.visit(ctx.expression());
-    this.substitutedExpression += "=> " + result;
+    this.substitutedExpression += '=> ' + result;
     console.log(this.substitutedExpression);
     return result;
   }
@@ -208,9 +214,9 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
 
   // Convert property id (string) to enum
   private GetPropertyEnum(propertyName: string): ExpressionProperty {
-    if (this.stringEqualsIgnoreCase(propertyName, "Name")) return ExpressionProperty.Name;
-    else if (this.stringEqualsIgnoreCase(propertyName, "Guid")) return ExpressionProperty.Guid;
-    else if (this.stringEqualsIgnoreCase(propertyName, "ObjectType")) return ExpressionProperty.ObjectType;
+    if (this.stringEqualsIgnoreCase(propertyName, 'Name')) return ExpressionProperty.Name;
+    else if (this.stringEqualsIgnoreCase(propertyName, 'Guid')) return ExpressionProperty.Guid;
+    else if (this.stringEqualsIgnoreCase(propertyName, 'ObjectType')) return ExpressionProperty.ObjectType;
     else return ExpressionProperty.Unknown;
   }
 
@@ -240,25 +246,31 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
     propertyValue: string): boolean {
     switch (propertyName) {
       case ExpressionProperty.Name:
-        if (operator == ExpressionOperator.Equals) {
-          const currentValue = this.simItem.name || "";
+        if (operator === ExpressionOperator.Equals) {
+          const currentValue = this.simItem.name || '';
           this.substitutedExpression += `"${currentValue}" = "${propertyValue}"`;
           return this.stringEqualsIgnoreCase(currentValue, propertyValue);
         }
+        if (operator === ExpressionOperator.Like) {
+          const regexp = new RegExp(`${propertyValue}`);
+          const currentValue = this.simItem.name || '';
+          this.substitutedExpression += `RegExp("${currentValue}" , "${propertyValue}")`;
+          return regexp.test(currentValue);
+        }
         break;
       case ExpressionProperty.Guid:
-        if (operator == ExpressionOperator.Equals) {
-          const currentValue = this.simItem.guid || "";
+        if (operator === ExpressionOperator.Equals) {
+          const currentValue = this.simItem.guid || '';
           this.substitutedExpression += `"${currentValue}" = "${propertyValue}"`;
           return this.stringEqualsIgnoreCase(currentValue, propertyValue);
         }
         break;
       case ExpressionProperty.ObjectType:
-        const currentValue = "Vehicle";
+        const currentValue = 'Vehicle';
         this.substitutedExpression += `"${currentValue}" = "${propertyValue}"`;
         return this.stringEqualsIgnoreCase(currentValue, propertyValue);
       default:
-        console.error(`No validator for property type ${propertyName}`)
+        console.error(`No validator for property type ${propertyName}`);
         return false;
         break;
     }

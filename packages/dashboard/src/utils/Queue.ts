@@ -1,23 +1,23 @@
-export class Queue<T>{
-    _queue: T[];
- 
+export class Queue<T> {
+    public queue: T[];
+
     constructor(queue?: T[]) {
-      this._queue = queue || [];
+      this.queue = queue || [];
    }
- 
-   enqueue(item: T) {
-     this._queue.push(item);
+
+    public enqueue(item: T) {
+     this.queue.push(item);
    }
- 
-   dequeue(): T {
-     return <T>this._queue.shift();
+
+    public dequeue(): T {
+     return  this.queue.shift() as T;
    }
- 
-   clear() {
-     this._queue = [];
+
+    public clear() {
+     this.queue = [];
    }
- 
-   get count(): number {
-     return this._queue.length;
+
+    get count(): number {
+     return this.queue.length;
    }
 }

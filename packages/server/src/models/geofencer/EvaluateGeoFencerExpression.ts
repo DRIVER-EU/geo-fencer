@@ -1,12 +1,12 @@
 import { ANTLRInputStream, CommonTokenStream, ANTLRErrorListener } from 'antlr4ts';
-import { Recognizer } from "antlr4ts/Recognizer";
-import { RecognitionException } from "antlr4ts/RecognitionException";
+import { Recognizer } from 'antlr4ts/Recognizer';
+import { RecognitionException } from 'antlr4ts/RecognitionException';
 
 import { GeoFencerExpressionVisitorImpl } from './GeoFencerExpressionVisitorImpl';
-import { GeoFencerExpressionParser, ParseContext } from '../../antlr/generated/GeoFencerExpressionParser'
+import { GeoFencerExpressionParser, ParseContext } from '../../antlr/generated/GeoFencerExpressionParser';
 import { GeoFencerExpressionLexer } from '../../antlr/generated/GeoFencerExpressionLexer';
 
-import { ItemInterface } from '../../models/avro/eu/driver/model/sim/entity/Item'
+import { ItemInterface } from '../../models/avro/eu/driver/model/sim/entity/Item';
 
 
 // Base https://stackoverflow.com/questions/30976962/nested-boolean-expression-parser-using-antlr
@@ -23,7 +23,7 @@ export class EvaluateGeoFencerExpression {
 
   private evaluateErrors: string | null = null;
 
-  private evaluateError : boolean = false;
+  private evaluateError: boolean = false;
 
   // The compiled expression (ANTLR)
   private parseTree: ParseContext;
@@ -33,7 +33,7 @@ export class EvaluateGeoFencerExpression {
     this.BuildAstTree();
   }
 
-  public GetExpressionText() : string {
+  public GetExpressionText(): string {
     return this.expression;
   }
 
@@ -51,16 +51,16 @@ export class EvaluateGeoFencerExpression {
     // this.parseError = parser.buildParseTree;
   }
 
-  // Implemention ANTLRErrorListener 
+  // Implemention ANTLRErrorListener
   syntaxError(recognizer: Recognizer<any, any>, offendingSymbol: any | undefined, line: number, charPositionInLine: number, msg: string, e: RecognitionException | undefined) {
     this.parseError = true;
     this.parseErrors += `- "${msg}" (line=${line} column=${charPositionInLine})\n`;
   }
 
-  get ValidationsErrors() : string {
-    const error1 = (this.parseError) ? this.parseErrors : "";
-    const error2 = (this.evaluateError) ? this.evaluateErrors : "";
-    return error1 + (((this.parseError) && (this.evaluateError))  ? "\n" : "") + error2;
+  get ValidationsErrors(): string {
+    const error1 = (this.parseError) ? this.parseErrors : '';
+    const error2 = (this.evaluateError) ? this.evaluateErrors : '';
+    return error1 + (((this.parseError) && (this.evaluateError))  ? '\n' : '') + error2;
   }
 
   // Is the syntax of the expression correct
@@ -71,7 +71,7 @@ export class EvaluateGeoFencerExpression {
 
   public IsGeoFencerExpressionValid(itemSim: ItemInterface,
     errorCallback: (error: Error) => void,
-    debugCallback?: (evaluatedExpression : string) => void): boolean {
+    debugCallback?: (evaluatedExpression: string) => void): boolean {
     // Use the visitor entry point
     try {
       if (this.AstTreeIsValid) {
@@ -79,7 +79,7 @@ export class EvaluateGeoFencerExpression {
         const result = evaluateExpression.visit(this.parseTree);
         if (debugCallback) debugCallback(evaluateExpression.SubstitutedExpression);
         return result;
-      } else throw new Error("No AST tree; incorrect expression");
+      } else throw new Error('No AST tree; incorrect expression');
     }
     catch (e) {
       errorCallback(e);
@@ -89,11 +89,11 @@ export class EvaluateGeoFencerExpression {
     }
   }
 
-  get ExpressionText() : string {
+  get ExpressionText(): string {
     return this.expression;
   }
 
-  get IsValidExpression() : boolean {
+  get IsValidExpression(): boolean {
     return (!this.evaluateError) && (!this.parseError);
   }
 }

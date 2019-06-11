@@ -1,8 +1,8 @@
-import './sandbox-rule.css';
-import Component from 'vue-class-component';
-import { WidgetBase } from '@csnext/cs-client';
-import { ManagementApi, Configuration, TestRule, ResultTestRule } from './../../generated_rest_api/index'
-import { GEOFENCER_BASE_PATH } from './../../Config';
+import { WidgetBase } from "@csnext/cs-client";
+import Component from "vue-class-component";
+import { GEOFENCER_BASE_PATH } from "./../../Config";
+import { Configuration, ManagementApi, ResultTestRule, TestRule } from "./../../generated_rest_api/index";
+import "./sandbox-rule.css";
 
 // Component to test geofencer rules
 
@@ -31,11 +31,21 @@ const simItem: string = '{ \n \
   }';
 
 @Component({
-    name: 'sandbox-rule',
     components: {},
-    template: require('./sandbox-rule.html')
+    name: "sandbox-rule",
+    template: require("./sandbox-rule.html"),
 } as any)
 export class SandboxRule extends WidgetBase {
+
+    public expressionText: string = "GUID = 'TEST1' AND " +
+      "(NAME = 'TEST2' OR GUID =  'TEST2' ) AND ObjectType = 'Vehicle'";
+    public testData: string = simItem;
+    public errorMsg: string = "";
+    public restCallCompleted = false;
+    public expressionHasErrors = false;
+    public substitudedExpression = "";
+    public expressionError = "";
+    public expressionOutcome: boolean = false;
     private restClient: ManagementApi;
 
     constructor() {
@@ -44,20 +54,11 @@ export class SandboxRule extends WidgetBase {
         this.restClient = new ManagementApi(undefined, url, undefined);
     }
 
-    public expressionText: string = "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID =  'TEST2' ) AND ObjectType = 'Vehicle'";
-    public testData : string = simItem;
-    public errorMsg : string = "";
-    public restCallCompleted = false;
-    public expressionHasErrors = false;
-    public substitudedExpression = "";
-    public expressionError = "";
-    public expressionOutcome : boolean = false;
-
     public TestRule() {
         this.restCallCompleted = false;
         const ruleData: TestRule = {
             Expression: this.expressionText,
-            Item: this.testData
+            Item: this.testData,
         };
         this.restClient.doTestRule(ruleData)
             .then((testResult: ResultTestRule) => {
@@ -67,10 +68,9 @@ export class SandboxRule extends WidgetBase {
                 this.expressionError = testResult.ErrorMsg;
                 this.expressionOutcome = testResult.ExpressionResult;
                 this.restCallCompleted = true;
-            }).catch(error => {
+            }).catch((error) => {
                 this.restCallCompleted = false;
                 this.errorMsg = "Request to server failed.";
-                console.log(error);
-            }). finally(() => {});
+            });
     }
 }

@@ -1,19 +1,19 @@
-;
+
 
 import { TriggerArea } from './../models/geofencer/TriggerArea';
 import { EventEmitter } from 'events';
-import { RuleFired } from './../models/rest/rest-models'
-import { ItemInterface, Item } from './../models/avro/eu/driver/model/sim/entity/Item'
-import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope'
-import { GeoFencerDefinition } from '../models/geofencer/GeoFencerDefinition'
+import { RuleFired } from './../models/rest/rest-models';
+import { ItemInterface, Item } from './../models/avro/eu/driver/model/sim/entity/Item';
+import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
+import { GeoFencerDefinition } from '../models/geofencer/GeoFencerDefinition';
 
 // Services:
 import { IConfigService } from './config-service';
 import { ILogService } from './log-service';
 import { ISimulationService } from './simulation-service';
-import { ITestBedKafkaService } from './test-bed-kafka-service'
+import { ITestBedKafkaService } from './test-bed-kafka-service';
 
-var turf = require('@turf/turf');
+let turf = require('@turf/turf');
 
 /*
 
@@ -24,7 +24,7 @@ All state changes are reported
 
 export interface IGeoFencerService {
   GeoFencerDefintions: GeoFencerDefinition[];
-  LoadGeofencerRule(definition : GeoJSONEnvelopeInterface) : void;
+  LoadGeofencerRule(definition: GeoJSONEnvelopeInterface): void;
   GetRule(triggerAreaId: string): TriggerArea | undefined | null;
 
   // Fires when Sim item state changed
@@ -55,9 +55,9 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
   }
 
   /**
-   * Received a new or update simulation item 
+   * Received a new or update simulation item
    * @param guid Unqiue number for simulation item
-   * @param simItem The simulation object 
+   * @param simItem The simulation object
    */
   private onNewSimulationItem(guid: String, simItem: ItemInterface) {
     this.logService.LogMessage(`Received new simulation object: ${guid}`);
@@ -67,7 +67,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
   /**
  * Received a new or update simulation item from KAFKA bus
  * @param guid Unqiue number for simulation item
- * @param simItem The simulation object 
+ * @param simItem The simulation object
  * @param oldSimItem The simulation object before the update
  */
   private onUpdateSimulationItem(guid: String, simItem: ItemInterface, oldSimItem: ItemInterface) {
@@ -76,7 +76,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
   }
 
   /**
-* Simulation item is deleted 
+* Simulation item is deleted
 * @param guid Unqiue number for simulation item
 */
   private onDeleteSimulationItem(guid: string) {
@@ -94,12 +94,12 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
     this.LoadGeofencerRule(definition);
   }
 
-  public LoadGeofencerRule(definition : GeoJSONEnvelopeInterface) {
+  public LoadGeofencerRule(definition: GeoJSONEnvelopeInterface) {
 // For now reset the list (only one definition)
     // This will instantiate the AST rule validation
     this.logService.LogMessage(`Load geofencer definition.`);
     this.geoFencerDefintions = [new GeoFencerDefinition(this.logService, definition)];
-    
+
   }
 
   private ValidateAgainstAllRules(simItem: ItemInterface, isTestData = false) {
@@ -109,15 +109,15 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
           // Only called on change
           OnChangeTrigger: (rule: TriggerArea, simItem: ItemInterface, hit: boolean, initial: boolean) => {
             if (initial) {
-              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ""} ${hit ? " has match" : "has no match"} `);
+              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' has match' : 'has no match'} `);
             } else {
-              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ""} ${hit ? " changed to has match" : " changed to has no match"} `);
+              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' changed to has match' : ' changed to has no match'} `);
             }
             if ((hit) || (!hit && !initial)) {
               const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial);
               this.kafkaService.Publish(fireInfo);
               this.emit('stateChangeSimulationItem', fireInfo);
-            } 
+            }
           }
         }, isTestData);
     });

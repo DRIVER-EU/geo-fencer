@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param, Req, Put, Body } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Inject, Param, Req, Put, Body } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiImplicitParam, ApiUseTags, ApiImplicitBody } from '@nestjs/swagger';
 import { StatusResult, RulesResult, AnalyseRuleResult, TestRule, ResultTestRule, FakeGeoJSONEnvelopeInterface, ResultSetGeofencerDef, SimulationTestData, ResultSimulationTestData } from '../models/rest/rest-models';
 import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
@@ -35,7 +35,7 @@ export class ManagementController {
   })
   @Get('Rules')
   async GetRules(): Promise<RulesResult> {
-    if (this.service === null) throw new Error("Not initialized (yet)");
+    if (this.service === null) throw new Error('Not initialized (yet)');
     return await this.service.GetRules();
 
   }
@@ -56,7 +56,7 @@ export class ManagementController {
   })
   @Get('AnalyseRule/:id')
   async GetRule(@Param('id') id: string): Promise<AnalyseRuleResult> {
-    if (this.service === null) throw new Error("Not initialized (yet)");
+    if (this.service === null) throw new Error('Not initialized (yet)');
     return await this.service.GetAnalyseRule(id);
   }
 /*************************************************************************************************************/
@@ -72,18 +72,16 @@ export class ManagementController {
   })
   @Put('Definition')
   async SetGeoFencerDefinition(@Body() geofencerDefinition: FakeGeoJSONEnvelopeInterface /*GeoJSONEnvelopeInterface*/): Promise<ResultSetGeofencerDef | undefined> {
-    if (this.service === null) throw new Error("Not initialized (yet)");
+    if (this.service === null) throw new Error('Not initialized (yet)');
     try {
       const json = JSON.parse(geofencerDefinition.Message) as GeoJSONEnvelopeInterface;
       this.service.SetGeofencerDefinition(json);
       return new ResultSetGeofencerDef();
     } catch (e) {
-      throw new Error("Invalid data");
+      throw new BadRequestException('Geojson invalid: ' + e.message);
     }
   }
 /*************************************************************************************************************/
-  
-
 
   @ApiOperation({
     title: 'Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE',
@@ -97,7 +95,7 @@ export class ManagementController {
   })
   @Put('SendSimulationTestData')
   async SendSimulationTestData(@Body() testData: SimulationTestData ): Promise<ResultSimulationTestData | undefined> {
-    if (this.service === null) throw new Error("Not initialized (yet)");
+    if (this.service === null) throw new Error('Not initialized (yet)');
     try {
 
       const json = JSON.parse(testData.JsonTextItemArray) as ItemInterface[];
@@ -106,9 +104,9 @@ export class ManagementController {
       result.Message = `Inserted ${json.length} test items.`;
       return result;
     } catch (e) {
-      throw new Error("Invalid data");
+      throw new Error('Invalid data');
     }
-  }  
+  }
   /*************************************************************************************************************/
   @ApiOperation({
     title: 'Test a rule evaluation (creating rules)',
@@ -131,8 +129,8 @@ export class ManagementController {
   async TestRule(@Body() expression: TestRule): Promise<ResultTestRule> {
     let result: ResultTestRule = {
       ExpressionResult: false,
-      ErrorMsg: "",
-      Substituded: "",
+      ErrorMsg: '',
+      Substituded: '',
       HasError: false
     };
     try {
@@ -172,7 +170,7 @@ export class ManagementController {
   })
   @Get('Status')
   async GetStatus(): Promise<StatusResult> {
-    if (this.service === null) throw new Error("Not initialized (yet)");
+    if (this.service === null) throw new Error('Not initialized (yet)');
     return await this.service.GetStatus();
 
   }

@@ -1,63 +1,56 @@
-import { IDatasource } from '@csnext/cs-core';
-import { ManagementApi, Configuration, FakeGeoJSONEnvelopeInterface, SimulationTestData } from './../generated_rest_api/index'
-import { GEOFENCER_BASE_PATH } from './../Config';
-const Axios = require('axios')
+import { IDatasource } from "@csnext/cs-core";
+import Axios from "axios";
+import { GEOFENCER_BASE_PATH } from "./../Config";
+import { FakeGeoJSONEnvelopeInterface, ManagementApi, SimulationTestData } from "./../generated_rest_api/index";
 
 export class MainProject implements IDatasource {
-  public id = 'project-datasource';
-  
-  private restClient : ManagementApi;
+  public id = "project-datasource";
+
+  private restClient: ManagementApi;
 
   constructor() {
     const url = GEOFENCER_BASE_PATH;
     this.restClient = new ManagementApi(undefined,  url, undefined);
   }
 
-  public GetBaseServerUrl() : string {
+  public GetBaseServerUrl(): string {
     return GEOFENCER_BASE_PATH;
   }
 
-  public async GetAnalyseRule(ruleId : string) {
+  public async GetAnalyseRule(ruleId: string) {
     // Do REST call to server
-    return await this.restClient.getAnalyseRule(ruleId);
+    return this.restClient.getAnalyseRule(ruleId);
   }
 
   public async GetRules() {
     // Do REST call to server
-    return await this.restClient.getRules();
+    return this.restClient.getRules();
   }
 
   public async GetStatus() {
-    return await this.restClient.getStatus();
+    return this.restClient.getStatus();
   }
-
 
   public async GetTemplateGeofencerDefinition() {
     const url = `${GEOFENCER_BASE_PATH}/geofencerdef.json`;
-    Axios.get(url)
-.then(function (response : any) {
-  console.log(response);
-})
-.catch(function (error : any) {
-  console.log(error);
-});
+    Axios.get(url);
   }
 
   public async execute(): Promise<any> {
     return this;
   }
 
-  public async SetGeofencerDefinition(geofencerDef : string) {
-    const definition : FakeGeoJSONEnvelopeInterface = {
-      Message: geofencerDef
+  public async SetGeofencerDefinition(geofencerDef: string) {
+    const definition: FakeGeoJSONEnvelopeInterface = {
+      Message: geofencerDef,
     };
-      return await this.restClient.setGeofencerDefinition(definition);
+    return this.restClient.setGeofencerDefinition(definition);
   }
 
-  public async SendSimulatorItemTestData(items_as_json : string) {
-    const testData : SimulationTestData = {
-      JsonTextItemArray: items_as_json
+  public async SendSimulatorItemTestData(jsonItems: string) {
+    const testData: SimulationTestData = {
+      JsonTextItemArray: jsonItems,
     };
-      return await this.restClient.sendSimulationTestData(testData);
+    return this.restClient.sendSimulationTestData(testData);
   }
 }

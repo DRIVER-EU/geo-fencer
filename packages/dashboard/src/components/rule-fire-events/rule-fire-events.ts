@@ -1,30 +1,26 @@
-import './rule-fire-events.css';
-import Component from 'vue-class-component';
-import { WidgetBase } from '@csnext/cs-client';
-import { NotificationService } from './../../services/notification_service'
-import { RuleFireInfo } from './../../models/rule_fire_info'
+import { WidgetBase } from "@csnext/cs-client";
+// tslint:disable-next-line: ordered-imports
+import Component from "vue-class-component";
+import { RuleFireInfo } from "./../../models/rule_fire_info";
+import { NotificationService } from "./../../services/notification_service";
+import "./rule-fire-events.css";
 
 @Component({
-    name: 'rule-fire-events',
     components: {},
-    template: require('./rule-fire-events.html')
+    name: "rule-fire-events",
+    template: require("./rule-fire-events.html"),
 } as any)
 export class RuleFireEvents extends WidgetBase {
-    
-    public rulesFired: Array<RuleFireInfo> = [];
-    constructor() {
-        super();
-        this.$set(this, 'rulesFired', NotificationService.getInstance().rulesFired._queue);
-        
-    }
+    public rulesFired: RuleFireInfo[] = [];
 
     public fields = [
-        { key: 'ruleId', label: 'Rule ID'},
-        { key: 'simItemGuid', label: 'Sim ID', },
-        { key: 'hit', label: 'HIT', },
+        { key: "ruleId", label: "Rule ID"},
+        { key: "simItemGuid", label: "Sim ID" },
+        { key: "hit", label: "HIT" },
 
-    ]
-
-
-
+    ];
+    constructor() {
+        super();
+        this.$set(this, "rulesFired", NotificationService.getInstance().rulesFired.queue);
+    }
 }

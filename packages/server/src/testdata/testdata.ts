@@ -8,9 +8,9 @@ import { PointType } from '../models/avro/eu/driver/model/geojson/PointTypeEnum'
 import { PolygonType } from '../models/avro/eu/driver/model/geojson/PolygonTypeEnum';
 
 export const testItemData: ItemInterface = {
-    guid: "TEST1",
-    name: "TEST2",
-    owner: "",
+    guid: 'TEST1',
+    name: 'TEST2',
+    owner: '',
     location: {
       altitude: 0.0,
       longitude: 0.0,
@@ -29,20 +29,20 @@ export const testItemData: ItemInterface = {
     visibleForParticipant: false,
     movable: false,
     itemType: null
-  
+
   };
 
   export const testItemData1: ItemInterface = {
-    guid: "TEST1",
-    name: "TEST2",
-    owner: "",
+    guid: 'TEST1',
+    name: 'TEST2',
+    owner: '',
     location: {
       altitude: 0.0,
       longitude: 4.254193,
       latitude: 52.104876,
 
-      //longitude: 4.255850315093994,
-      //latitude: 52.10256443347386
+      // longitude: 4.255850315093994,
+      // latitude: 52.10256443347386
     },
     orientation: {
       pitch: 0,
@@ -62,8 +62,8 @@ export const testItemData: ItemInterface = {
 
   export const  geoFencerDef: GeoJSONEnvelopeInterface = {
     properties: {
-      "Title": "Geo Fencer demo",
-      "ID": "GeoFencer1"
+      'Title': 'Geo Fencer demo',
+      'ID': 'GeoFencer1'
     },
     geojson: {
 
@@ -111,9 +111,9 @@ export const testItemData: ItemInterface = {
             ]
           },
           properties: {
-            "ID": "ScheveningenHaven",
-            "GeoFencerRule": "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID = 'TEST2')",
-            "Radius": 5
+            'ID': 'ScheveningenHaven',
+            'GeoFencerRule': 'GUID = \'TEST1\' AND (NAME = \'TEST2\' OR GUID = \'TEST2\')',
+            'Radius': 5
           }
         },
         {
@@ -158,11 +158,11 @@ export const testItemData: ItemInterface = {
             ]
           },
           properties: {
-            "ID": "TNO",
-            "GeoFencerRule": "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID LIKE  'TEST2')",
-            "Radius": 5
+            'ID': 'TNO',
+            'GeoFencerRule': 'GUID = \'TEST1\' AND (NAME = \'TEST2\' OR GUID LIKE  \'TEST2\')',
+            'Radius': 5
           }
         }
       ]
     }
-  }
+  };

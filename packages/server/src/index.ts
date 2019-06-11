@@ -2,7 +2,7 @@ import { GeoFencerServer } from './main';
 import * as npmPackage from './../package.json';
 
 /*
-Test code: 
+Test code:
 
 import { EvaluateGeoFencerExpression } from './models/geofencer/EvaluateGeoFencerExpression'
 import { testItemData} from './testdata/testdata'
@@ -18,7 +18,7 @@ const ast = eval1.IsGeoFencerExpressionValid(testItemData,(error : Error) => {
 */
 
 
-/* 
+/*
 Initial ENTRY point to start GeoFencer service
 */
 console.log(`Start service "${npmPackage.name}, v${npmPackage.version}"`);
