@@ -6,7 +6,7 @@ import { GeoFencerExpressionVisitorImpl } from './GeoFencerExpressionVisitorImpl
 import { GeoFencerExpressionParser, ParseContext } from '../../antlr/generated/GeoFencerExpressionParser';
 import { GeoFencerExpressionLexer } from '../../antlr/generated/GeoFencerExpressionLexer';
 
-import { ItemInterface } from '../../models/avro/eu/driver/model/sim/entity/Item';
+import { IItem } from '../../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 
 
 // Base https://stackoverflow.com/questions/30976962/nested-boolean-expression-parser-using-antlr
@@ -69,7 +69,7 @@ export class EvaluateGeoFencerExpression {
     return !this.parseError;
   }
 
-  public IsGeoFencerExpressionValid(itemSim: ItemInterface,
+  public IsGeoFencerExpressionValid(itemSim: IItem,
     errorCallback: (error: Error) => void,
     debugCallback?: (evaluatedExpression: string) => void): boolean {
     // Use the visitor entry point

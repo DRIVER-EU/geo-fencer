@@ -1,13 +1,7 @@
-import { ItemInterface } from './../models/avro/eu/driver/model/sim/entity/Item';
-import { ObjectDeletedInterface } from './../models/avro/eu/driver/model/sim/ObjectDeleted';
-import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
-import { FeatureCollectionType } from '../models/avro/eu/driver/model/geojson/FeatureCollectionTypeEnum';
-import { Feature, Polygon } from '../models/avro/eu/driver/model/geojson/FeatureCollection';
-import { FeatureType } from '../models/avro/eu/driver/model/geojson/FeatureTypeEnum';
-import { PointType } from '../models/avro/eu/driver/model/geojson/PointTypeEnum';
-import { PolygonType } from '../models/avro/eu/driver/model/geojson/PolygonTypeEnum';
+import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IGeoJSONEnvelope, FeatureCollectionType, PolygonType, FeatureType, IPolygon } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 
-export const testItemData: ItemInterface = {
+export const testItemData: IItem = {
     guid: 'TEST1',
     name: 'TEST2',
     owner: '',
@@ -32,7 +26,7 @@ export const testItemData: ItemInterface = {
 
   };
 
-  export const testItemData1: ItemInterface = {
+  export const testItemData1: IItem = {
     guid: 'TEST1',
     name: 'TEST2',
     owner: '',
@@ -60,7 +54,7 @@ export const testItemData: ItemInterface = {
 
   };
 
-  export const  geoFencerDef: GeoJSONEnvelopeInterface = {
+  export const  geoFencerDef: IGeoJSONEnvelope = {
     properties: {
       'Title': 'Geo Fencer demo',
       'ID': 'GeoFencer1'
@@ -71,7 +65,7 @@ export const testItemData: ItemInterface = {
       features: [
         {
           type: FeatureType.Feature,
-          geometry: <Polygon>{
+          geometry: <IPolygon>{
             type: PolygonType.Polygon,
             coordinates: [
               [
@@ -118,7 +112,7 @@ export const testItemData: ItemInterface = {
         },
         {
           type: FeatureType.Feature,
-          geometry: <Polygon>{
+          geometry: <IPolygon>{
             type: PolygonType.Polygon,
             coordinates: [
               [

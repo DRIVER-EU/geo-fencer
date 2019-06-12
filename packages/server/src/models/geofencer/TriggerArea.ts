@@ -1,14 +1,9 @@
 import { Feature as TurfFeature, Point as TurfPoint, Polygon as TurfPolygon, MultiPolygon as TurfMultiPolygon, GeometryObject } from '@turf/turf';
-
-import { Feature } from './../../models/avro/eu/driver/model/geojson/FeatureCollection';
-import { PolygonType } from './../../models/avro/eu/driver/model/geojson/PolygonTypeEnum';
+import { IItem } from './../../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IFeature, PolygonType, PointType } from './../../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { GeoFencerDefinition } from './GeoFencerDefinition';
-import { PointType } from '../avro/eu/driver/model/geojson/PointTypeEnum';
-
 import { EvaluateGeoFencerExpression } from './../geofencer/EvaluateGeoFencerExpression';
-import { ItemInterface } from './../../models/avro/eu/driver/model/sim/entity/Item';
 import { IGeoFencerTrigger } from './TriggerEvents';
-
 import { testItemData } from './../../testdata/testdata';
 let turf = require('@turf/turf');
 
@@ -42,7 +37,7 @@ export class TriggerArea {
     private readonly RulePropertyName = 'GeoFencerRule';
 
     private triggerAreaTurf: TurfFeature | null = null;
-    private geoFencerDef: Feature;
+    private geoFencerDef: IFeature;
     private pointRadiusInMeter: number = 0;
     private evalExpression: EvaluateGeoFencerExpression | null = null;
     private owner: GeoFencerDefinition;
@@ -50,7 +45,7 @@ export class TriggerArea {
 
     private validatedItems: { [id: string]: ISimItemStatus; } = {};
 
-    constructor(owner: GeoFencerDefinition, area: Feature) {
+    constructor(owner: GeoFencerDefinition, area: IFeature) {
         this.runtimeUniqueID = NumberGenerator.GetUniqueNumber();
         this.geoFencerDef = area;
         this.owner = owner;
@@ -129,7 +124,7 @@ export class TriggerArea {
     }
 
     // Checks the rule and report all state changes [In Geographic area AND Rule expression outcome ]
-    public ValidateAgainstRule(simItem: ItemInterface, callback: IGeoFencerTrigger, isTestData = false) {
+    public ValidateAgainstRule(simItem: IItem, callback: IGeoFencerTrigger, isTestData = false) {
         if (this.ExpressionIsValid) {
             // Check if sim Item is in geographic area
             const inArea = this.IsItemInGeographicArea(simItem);
@@ -165,7 +160,7 @@ export class TriggerArea {
         }
     }
 
-    private IsItemInGeographicArea(simItem: ItemInterface) {
+    private IsItemInGeographicArea(simItem: IItem) {
         return this.IsInGeographicArea(turf.point([simItem.location.longitude, simItem.location.latitude]));
     }
 
@@ -180,7 +175,7 @@ export class TriggerArea {
         return false;
     }
 
-    private IsRuleMatch(simItem: ItemInterface, debugCallback?: (evaluatedExpression: string) => void): boolean {
+    private IsRuleMatch(simItem: IItem, debugCallback?: (evaluatedExpression: string) => void): boolean {
         if (this.evalExpression) {
             return this.evalExpression.IsGeoFencerExpressionValid(simItem,
                 (error: Error) => {

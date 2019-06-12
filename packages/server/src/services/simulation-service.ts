@@ -1,4 +1,4 @@
-import { ItemInterface } from './../models/avro/eu/driver/model/sim/entity/Item';
+import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { EventEmitter } from 'events';
 
 import { Logger } from 'node-test-bed-adapter';
@@ -6,7 +6,7 @@ import { Logger } from 'node-test-bed-adapter';
 import { ITestBedKafkaService }  from './test-bed-kafka-service';
 
 
-import { ObjectDeletedInterface } from './../models/avro/eu/driver/model/sim/ObjectDeleted';
+import { IObjectDeleted } from './../models/avro_generated/eu/driver/model/sim/simulation_object_deleted-value';
 import { IConfigService } from './config-service';
 import { ILogService } from './log-service';
 
@@ -24,17 +24,17 @@ import { ILogService } from './log-service';
  */
 export interface ISimulationService {
    // Events fired when simulator items collection changes
-   on(event: 'newSimulationItem', listener: (Guid: string, simItem: ItemInterface) => void): this;
-   on(event: 'updateSimulationItem', listener: (Guid: string, simItem: ItemInterface, oldSimItem: ItemInterface) => void): this;
+   on(event: 'newSimulationItem', listener: (Guid: string, simItem: IItem) => void): this;
+   on(event: 'updateSimulationItem', listener: (Guid: string, simItem: IItem, oldSimItem: IItem) => void): this;
    on(event: 'deleteSimulationItem', listener: (Guid: string) => void): this;
 
-   InjectTestData(items: ItemInterface[]): void;
+   InjectTestData(items: IItem[]): void;
 }
 
 //
 export class SimulationService extends EventEmitter implements ISimulationService {
     // Dictionary with all simulation items received from KAFKA
-    private simulationItems = new Map<string, ItemInterface>();
+    private simulationItems = new Map<string, IItem>();
 
     private log = Logger.instance;
   constructor(
@@ -51,12 +51,18 @@ export class SimulationService extends EventEmitter implements ISimulationServic
     this.kafkaService.on('ObjectDeletedMsg', (delObj) => this.onObjectDeleted(delObj));
   }
 
-  private onObjectDeleted(simItem: ObjectDeletedInterface): void {
+  private onObjectDeleted(simItem: IObjectDeleted): void {
       this.emit('deleteSimulationItem', simItem.guid);
       this.simulationItems.delete(simItem.guid);
   }
 
-  private onSimulationItemTopic(simItem: ItemInterface): void {
+  private onSimulationItemTopic(simItem: IItem): void {
+    if (simItem.hasOwnProperty('properties')) {
+      if ((simItem.properties)) {
+        const r1 = simItem.properties['prop1'] as string;
+        console.log(r1);
+      }
+    }
       // Lookup simulation entity
       const oldSimulationItem = this.simulationItems.get(simItem.guid);
       if (oldSimulationItem) {
@@ -69,7 +75,7 @@ export class SimulationService extends EventEmitter implements ISimulationServic
       this.simulationItems.set( simItem.guid, simItem);
   }
 
-  public InjectTestData(items: ItemInterface[]) {
+  public InjectTestData(items: IItem[]) {
     items.forEach(x => this.onSimulationItemTopic(x));
   }
 }

@@ -3,8 +3,8 @@ import { ItemState } from './../models/rest/rest-models';
 import { Injectable, Inject, Scope } from '@nestjs/common';
 import { GeofencerProvider } from './../geofencer-provider';
 import { StatusResult, GeoFencerRule, RulesResult, AnalyseRuleResult, ResultTestRule } from '../models/rest/rest-models';
-import { GeoJSONEnvelopeInterface } from 'src/models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
-import { ItemInterface } from 'src/models/avro/eu/driver/model/sim/entity/Item';
+import { IGeoJSONEnvelope } from 'src/models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
+import { IItem } from 'src/models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class ManagementService {
@@ -12,12 +12,12 @@ export class ManagementService {
     constructor(@Inject('GeofencerProvider') private readonly provider: GeofencerProvider) {
     }
 
-    SetGeofencerDefinition(definition: GeoJSONEnvelopeInterface) {
+    SetGeofencerDefinition(definition: IGeoJSONEnvelope) {
         this.provider.LogService.LogMessage('Received GeoFencer definition (REST call).');
         this.provider.GeoFencerService.LoadGeofencerRule(definition);
     }
 
-    ApplyTestData(testData: ItemInterface[]) {
+    ApplyTestData(testData: IItem[]) {
         this.provider.LogService.LogMessage('Test Data (REST call).');
         this.provider.SimulationService.InjectTestData(testData);
     }

@@ -17,7 +17,7 @@ import {
   BoolContext,
   StringExpressionContext
 } from '../../antlr/generated/GeoFencerExpressionParser';
-import { ItemInterface } from '../avro/eu/driver/model/sim/entity/Item';
+import { IItem } from '../avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { GeoFencerExpressionError } from './GeofencerExceptions';
 
 enum ExpressionProperty {
@@ -50,11 +50,11 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
 
 
 
-  private simItem: ItemInterface;
+  private simItem: IItem;
 
   private substitutedExpression: string = '';
 
-  constructor(itemSim: ItemInterface) {
+  constructor(itemSim: IItem) {
     super();
     this.simItem = itemSim;
   }

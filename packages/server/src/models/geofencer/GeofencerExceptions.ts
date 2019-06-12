@@ -1,5 +1,5 @@
 export class GeoFencerExpressionError extends Error {
-    readonly name: "GeoFencerExpressionError"
+    readonly name: 'GeoFencerExpressionError';
     constructor(msg?: string) {
         super(msg);
     }

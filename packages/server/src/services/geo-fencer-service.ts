@@ -3,8 +3,8 @@
 import { TriggerArea } from './../models/geofencer/TriggerArea';
 import { EventEmitter } from 'events';
 import { RuleFired } from './../models/rest/rest-models';
-import { ItemInterface, Item } from './../models/avro/eu/driver/model/sim/entity/Item';
-import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
+import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IGeoJSONEnvelope } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { GeoFencerDefinition } from '../models/geofencer/GeoFencerDefinition';
 
 // Services:
@@ -24,7 +24,7 @@ All state changes are reported
 
 export interface IGeoFencerService {
   GeoFencerDefintions: GeoFencerDefinition[];
-  LoadGeofencerRule(definition: GeoJSONEnvelopeInterface): void;
+  LoadGeofencerRule(definition: IGeoJSONEnvelope): void;
   GetRule(triggerAreaId: string): TriggerArea | undefined | null;
 
   // Fires when Sim item state changed
@@ -59,7 +59,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
    * @param guid Unqiue number for simulation item
    * @param simItem The simulation object
    */
-  private onNewSimulationItem(guid: String, simItem: ItemInterface) {
+  private onNewSimulationItem(guid: String, simItem: IItem) {
     this.logService.LogMessage(`Received new simulation object: ${guid}`);
     this.ValidateAgainstAllRules(simItem);
   }
@@ -70,7 +70,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
  * @param simItem The simulation object
  * @param oldSimItem The simulation object before the update
  */
-  private onUpdateSimulationItem(guid: String, simItem: ItemInterface, oldSimItem: ItemInterface) {
+  private onUpdateSimulationItem(guid: String, simItem: IItem, oldSimItem: IItem) {
     this.logService.LogMessage(`Received update simulation object: ${guid}`);
     this.ValidateAgainstAllRules(simItem);
   }
@@ -90,11 +90,11 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
   /**
    * Add Geo Fencer defintion
    */
-  private onGeoFencerDefinition(definition: GeoJSONEnvelopeInterface) {
+  private onGeoFencerDefinition(definition: IGeoJSONEnvelope) {
     this.LoadGeofencerRule(definition);
   }
 
-  public LoadGeofencerRule(definition: GeoJSONEnvelopeInterface) {
+  public LoadGeofencerRule(definition: IGeoJSONEnvelope) {
 // For now reset the list (only one definition)
     // This will instantiate the AST rule validation
     this.logService.LogMessage(`Load geofencer definition.`);
@@ -102,12 +102,12 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
 
   }
 
-  private ValidateAgainstAllRules(simItem: ItemInterface, isTestData = false) {
+  private ValidateAgainstAllRules(simItem: IItem, isTestData = false) {
     this.geoFencerDefintions.forEach((geoFencerDef: GeoFencerDefinition) => {
       geoFencerDef.ValidateAgainstAllRules(simItem,
         {
           // Only called on change
-          OnChangeTrigger: (rule: TriggerArea, simItem: ItemInterface, hit: boolean, initial: boolean) => {
+          OnChangeTrigger: (rule: TriggerArea, simItem: IItem, hit: boolean, initial: boolean) => {
             if (initial) {
               this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' has match' : 'has no match'} `);
             } else {

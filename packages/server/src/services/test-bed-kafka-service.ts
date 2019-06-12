@@ -1,18 +1,18 @@
 import { EventEmitter } from 'events';
 import { TestBedAdapter, Logger, LogLevel, IAdapterMessage } from 'node-test-bed-adapter';
-import { geoFencerDef } from './../testdata/testdata'
-import { RuleFired } from './../models/rest/rest-models'
+import { geoFencerDef } from './../testdata/testdata';
+import { RuleFired } from './../models/rest/rest-models';
 
-// Services: 
+// Services:
 import { IConfigService, ITopicNames } from './config-service';
 import { ILogService } from './log-service';
 
 // AVRO kafka schema's
-import { ItemInterface } from './../models/avro/eu/driver/model/sim/entity/Item';
-import { ObjectDeletedInterface } from './../models/avro/eu/driver/model/sim/ObjectDeleted';
-import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
+import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IObjectDeleted } from './../models/avro_generated/eu/driver/model/sim/simulation_object_deleted-value';
+import { IGeoJSONEnvelope } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 
-/* 
+/*
 The TestBedKafkaService connects to the KAFKA bus and listen on the 'Item' and 'GeoFencer' topics
 It uses the node.js eu-driver implementation for this: https://github.com/DRIVER-EU/node-test-bed-adapter
 
@@ -30,21 +30,21 @@ export interface ITestBedAdapterSettings {
   schemaRegistryUrl: string;
   autoRegisterSchemas: boolean;
   kafkaClientId: string;
-  
+
 }
 
 export interface ITestBedKafkaService {
   // Fires when a simulator 'Item' is published (by external party) on KAFKA bus (created or updated)
-  on(event: 'SimulationItemMsg', listener: (simItem: ItemInterface) => void): this;
+  on(event: 'SimulationItemMsg', listener: (simItem: IItem) => void): this;
   // Fires when a simulator 'Item' is removed from KAFKA bus (by external party)
-  on(event: 'ObjectDeletedMsg', listener: (simItem: ObjectDeletedInterface) => void): this;
+  on(event: 'ObjectDeletedMsg', listener: (simItem: IObjectDeleted) => void): this;
   // Fired when a GeoFencerDefinitionMsg is published (by external party) on KAFKA bus.
-  on(event: 'GeoFencerDefinitionMsg', listener: (geoFencerDefinition: GeoJSONEnvelopeInterface) => void): this;
+  on(event: 'GeoFencerDefinitionMsg', listener: (geoFencerDefinition: IGeoJSONEnvelope) => void): this;
 
-  ConnectToKafka() : void;
-  GenerateTestMessages() : void;
-  SubscribedTopics : String; 
-  Publish(topicInfo : RuleFired) : void;
+  ConnectToKafka(): void;
+  GenerateTestMessages(): void;
+  SubscribedTopics: String;
+  Publish(topicInfo: RuleFired): void;
   settings: ITestBedAdapterSettings;
 }
 
@@ -93,7 +93,7 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     });
   }
 
-  public ConnectToKafka() : void {
+  public ConnectToKafka(): void {
     this.adapter.connect();
   }
 
@@ -101,9 +101,9 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     return this.kafkaSettings;
   }
 
-  public GenerateTestMessages() : void {
+  public GenerateTestMessages(): void {
     const json = JSON.stringify(geoFencerDef);
-    this.emit("GeoFencerDefinitionMsg", geoFencerDef);
+    this.emit('GeoFencerDefinitionMsg', geoFencerDef);
   }
 
   private HandleMessage(message: IAdapterMessage) {
@@ -114,18 +114,18 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     switch (message.topic) {
       case this.topicNames.GeoFencerDefinition:
         // GeoFencer definition (wrapped in GeoJSON)
-        this.emit("GeoFencerDefinitionMsg", message.value as GeoJSONEnvelopeInterface);
+        this.emit('GeoFencerDefinitionMsg', message.value as IGeoJSONEnvelope);
         break;
       case this.topicNames.SimulationItemTopicOther:
       case this.topicNames.SimulationItemTopicBlue:
       case this.topicNames.SimulationItemTopicRed:
       case this.topicNames.SimulationItemTopicWhite:
         // Simulation Item created or updated
-        this.emit("SimulationItemMsg", message.value as ItemInterface);
+        this.emit('SimulationItemMsg', message.value as IItem);
         break;
       case this.topicNames.SimItemDeleted:
         // Simulation Item deleted
-        this.emit("ObjectDeletedMsg", message.value as ObjectDeletedInterface);
+        this.emit('ObjectDeletedMsg', message.value as IObjectDeleted);
         break;
       default:
          this.logService.LogMessage(`Unknown topic {message.topic} in kafka bus.`);
@@ -134,11 +134,11 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
   }
 
   public get SubscribedTopics() {
-    return "";
+    return '';
   }
 
-  public Publish(topicInfo : RuleFired) : void {
-    
+  public Publish(topicInfo: RuleFired): void {
+
   }
 
 }

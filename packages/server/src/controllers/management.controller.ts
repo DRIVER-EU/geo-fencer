@@ -1,9 +1,10 @@
+
 import { BadRequestException, Controller, Get, Inject, Param, Req, Put, Body } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiImplicitParam, ApiUseTags, ApiImplicitBody } from '@nestjs/swagger';
 import { StatusResult, RulesResult, AnalyseRuleResult, TestRule, ResultTestRule, FakeGeoJSONEnvelopeInterface, ResultSetGeofencerDef, SimulationTestData, ResultSimulationTestData } from '../models/rest/rest-models';
-import { GeoJSONEnvelopeInterface } from './../models/avro/eu/driver/model/geojson/GeoJSONEnvelope';
+import { IGeoJSONEnvelope } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { EvaluateGeoFencerExpression } from './../models/geofencer/EvaluateGeoFencerExpression';
-import { ItemInterface } from 'src/models/avro/eu/driver/model/sim/entity/Item';
+import { IItem } from 'src/models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { ManagementService } from './management.service';
 
 /*
@@ -74,7 +75,7 @@ export class ManagementController {
   async SetGeoFencerDefinition(@Body() geofencerDefinition: FakeGeoJSONEnvelopeInterface /*GeoJSONEnvelopeInterface*/): Promise<ResultSetGeofencerDef | undefined> {
     if (this.service === null) throw new Error('Not initialized (yet)');
     try {
-      const json = JSON.parse(geofencerDefinition.Message) as GeoJSONEnvelopeInterface;
+      const json = JSON.parse(geofencerDefinition.Message) as IGeoJSONEnvelope;
       this.service.SetGeofencerDefinition(json);
       return new ResultSetGeofencerDef();
     } catch (e) {
@@ -98,7 +99,7 @@ export class ManagementController {
     if (this.service === null) throw new Error('Not initialized (yet)');
     try {
 
-      const json = JSON.parse(testData.JsonTextItemArray) as ItemInterface[];
+      const json = JSON.parse(testData.JsonTextItemArray) as IItem[];
       this.service.ApplyTestData(json);
       let result = new ResultSimulationTestData();
       result.Message = `Inserted ${json.length} test items.`;
@@ -134,7 +135,7 @@ export class ManagementController {
       HasError: false
     };
     try {
-      const testData = JSON.parse(expression.Item) as ItemInterface;
+      const testData = JSON.parse(expression.Item) as IItem;
       let evalExpression = new EvaluateGeoFencerExpression(expression.Expression); // Build AST tree
       if (evalExpression.IsValidExpression) {
         // Validate against AST tree
