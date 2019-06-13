@@ -1,0 +1,27 @@
+<div>
+    <div v-if="errorMsg">
+        <b-alert show variant="danger" class="mb-2">{{errorMsg}}</b-alert>
+    </div>
+    <H1>Upload</H1>
+    <input type="checkbox" id="useKafka" v-model="useKafka">Use KAFKA to publish</input>
+    <br/>
+    <label class="geofencerButton">
+        Upload geo-fencer definition
+        <input type="file" @change="LoadGeoFencerDefinitionFromFile" accept=".json" multiple=false
+          ref="geofencerDefFile">
+      </label>
+      <br/>
+      <label class="geofencerButton">
+        Upload simulation test data
+        <input type="file" @change="LoadSimTestDataFromFile" accept=".json" multiple=false>
+      </label>
+      <br/>
+      <H1>Download</H1>
+      <label  class="geofencerButton">
+          <button v-on:click="DownloadExampleGeofencerDefinition">Example geo-fencer definition</button>
+      </label>
+      <br>
+      <label  class="geofencerButton">
+          <button v-on:click="DownloadSampleData">Example simulation test data</button>
+      </label>
+</div>

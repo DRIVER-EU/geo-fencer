@@ -1,8 +1,6 @@
 {
-    "SimItemDeleted": "simulation_entity_item-deleted",
-    "SimItemOther": "simulation_entity_item-other",
-    "SimItemBlue": "simulation_entity_item-blue",
-    "SimItemRed": "simulation_entity_item-red",
-    "SimItemWhite": "simulation_entity_item-white",
-    "GeoFencerDefinition": "geo-fencer-definition"
+    "SimItemDeleted": "simulation_object_deleted",
+    "SimulationEntityItem": "simulation_entity_item",
+    "GeoFencerDefinition": "standard_named_geojson",
+    "RuleFired": "geofencing_event"
 }

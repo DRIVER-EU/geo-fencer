@@ -406,19 +406,28 @@ export const ManagementApiFetchParamCreator = function (configuration?: Configur
          * 
          * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendSimulationTestData(SimulationTestData: SimulationTestData, options: any = {}): FetchArgs {
+        sendSimulationTestData(SimulationTestData: SimulationTestData, UseKafka: boolean, options: any = {}): FetchArgs {
             // verify required parameter 'SimulationTestData' is not null or undefined
             if (SimulationTestData === null || SimulationTestData === undefined) {
                 throw new RequiredError('SimulationTestData','Required parameter SimulationTestData was null or undefined when calling sendSimulationTestData.');
+            }
+            // verify required parameter 'UseKafka' is not null or undefined
+            if (UseKafka === null || UseKafka === undefined) {
+                throw new RequiredError('UseKafka','Required parameter UseKafka was null or undefined when calling sendSimulationTestData.');
             }
             const localVarPath = `/management/SendSimulationTestData`;
             const localVarUrlObj = url.parse(localVarPath, true);
             const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (UseKafka !== undefined) {
+                localVarQueryParameter['useKafka'] = UseKafka;
+            }
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -438,19 +447,28 @@ export const ManagementApiFetchParamCreator = function (configuration?: Configur
          * 
          * @summary Upload geo fencer defintion file
          * @param {FakeGeoJSONEnvelopeInterface} FakeGeoJSONEnvelopeInterface 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, options: any = {}): FetchArgs {
+        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, UseKafka: boolean, options: any = {}): FetchArgs {
             // verify required parameter 'FakeGeoJSONEnvelopeInterface' is not null or undefined
             if (FakeGeoJSONEnvelopeInterface === null || FakeGeoJSONEnvelopeInterface === undefined) {
                 throw new RequiredError('FakeGeoJSONEnvelopeInterface','Required parameter FakeGeoJSONEnvelopeInterface was null or undefined when calling setGeofencerDefinition.');
+            }
+            // verify required parameter 'UseKafka' is not null or undefined
+            if (UseKafka === null || UseKafka === undefined) {
+                throw new RequiredError('UseKafka','Required parameter UseKafka was null or undefined when calling setGeofencerDefinition.');
             }
             const localVarPath = `/management/Definition`;
             const localVarUrlObj = url.parse(localVarPath, true);
             const localVarRequestOptions = Object.assign({ method: 'PUT' }, options);
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (UseKafka !== undefined) {
+                localVarQueryParameter['useKafka'] = UseKafka;
+            }
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -553,11 +571,12 @@ export const ManagementApiFp = function(configuration?: Configuration) {
          * 
          * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendSimulationTestData(SimulationTestData: SimulationTestData, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
-            const localVarFetchArgs = ManagementApiFetchParamCreator(configuration).sendSimulationTestData(SimulationTestData, options);
+        sendSimulationTestData(SimulationTestData: SimulationTestData, UseKafka: boolean, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
+            const localVarFetchArgs = ManagementApiFetchParamCreator(configuration).sendSimulationTestData(SimulationTestData, UseKafka, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
                     if (response.status >= 200 && response.status < 300) {
@@ -572,11 +591,12 @@ export const ManagementApiFp = function(configuration?: Configuration) {
          * 
          * @summary Upload geo fencer defintion file
          * @param {FakeGeoJSONEnvelopeInterface} FakeGeoJSONEnvelopeInterface 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
-            const localVarFetchArgs = ManagementApiFetchParamCreator(configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, options);
+        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, UseKafka: boolean, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
+            const localVarFetchArgs = ManagementApiFetchParamCreator(configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, UseKafka, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
                     if (response.status >= 200 && response.status < 300) {
@@ -638,21 +658,23 @@ export const ManagementApiFactory = function (configuration?: Configuration, fet
          * 
          * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
          * @param {SimulationTestData} SimulationTestData 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendSimulationTestData(SimulationTestData: SimulationTestData, options?: any) {
-            return ManagementApiFp(configuration).sendSimulationTestData(SimulationTestData, options)(fetch, basePath);
+        sendSimulationTestData(SimulationTestData: SimulationTestData, UseKafka: boolean, options?: any) {
+            return ManagementApiFp(configuration).sendSimulationTestData(SimulationTestData, UseKafka, options)(fetch, basePath);
         },
         /**
          * 
          * @summary Upload geo fencer defintion file
          * @param {FakeGeoJSONEnvelopeInterface} FakeGeoJSONEnvelopeInterface 
+         * @param {boolean} UseKafka 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, options?: any) {
-            return ManagementApiFp(configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, options)(fetch, basePath);
+        setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, UseKafka: boolean, options?: any) {
+            return ManagementApiFp(configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, UseKafka, options)(fetch, basePath);
         },
     };
 };
@@ -714,24 +736,26 @@ export class ManagementApi extends BaseAPI {
      * 
      * @summary Send simulation items to service (simulate kafka messages), ONLY FOR TESTING, WILL BE REMOVED IN FUTURE
      * @param {SimulationTestData} SimulationTestData 
+     * @param {boolean} UseKafka 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ManagementApi
      */
-    public sendSimulationTestData(SimulationTestData: SimulationTestData, options?: any) {
-        return ManagementApiFp(this.configuration).sendSimulationTestData(SimulationTestData, options)(this.fetch, this.basePath);
+    public sendSimulationTestData(SimulationTestData: SimulationTestData, UseKafka: boolean, options?: any) {
+        return ManagementApiFp(this.configuration).sendSimulationTestData(SimulationTestData, UseKafka, options)(this.fetch, this.basePath);
     }
 
     /**
      * 
      * @summary Upload geo fencer defintion file
      * @param {FakeGeoJSONEnvelopeInterface} FakeGeoJSONEnvelopeInterface 
+     * @param {boolean} UseKafka 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ManagementApi
      */
-    public setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, options?: any) {
-        return ManagementApiFp(this.configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, options)(this.fetch, this.basePath);
+    public setGeofencerDefinition(FakeGeoJSONEnvelopeInterface: FakeGeoJSONEnvelopeInterface, UseKafka: boolean, options?: any) {
+        return ManagementApiFp(this.configuration).setGeofencerDefinition(FakeGeoJSONEnvelopeInterface, UseKafka, options)(this.fetch, this.basePath);
     }
 
 }

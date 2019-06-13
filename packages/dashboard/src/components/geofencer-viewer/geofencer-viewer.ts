@@ -8,25 +8,18 @@ import { RuleDetail } from "./../rule-detail/rule.detail";
 import { RuleFireEvents } from "./../rule-fire-events/rule-fire-events";
 import { SandboxRule } from "./../sandbox-rule/sandbox-rule";
 import { ServerStatus } from "./../server-status/server-status";
+import { Upload } from "./../upload/upload";
 import "./geofencer-viewer.css";
 
 import FileSaver from "file-saver";
 import { GEOFENCER_BASE_PATH } from "./../../Config";
 
 @Component({
-  components: {  SandboxRule, RuleDetail, ServerStatus, RuleFireEvents },
+  components: {  SandboxRule, RuleDetail, ServerStatus, RuleFireEvents, Upload },
   name: "geofencer-viewer",
   template: require("./geofencer-viewer.html"),
 } as any)
 export class GeoFencerViewer extends WidgetBase {
-
-  get ExampleRulesUrl(): string {
-    return `${GEOFENCER_BASE_PATH}/public/geofencerdef.json`;
-  }
-
-  get ExampleTestData(): string {
-    return `${GEOFENCER_BASE_PATH}/public/simitems.json`;
-  }
 
   get totalRows() {
     return (this.rulesResult.Rules.length);
@@ -43,7 +36,7 @@ export class GeoFencerViewer extends WidgetBase {
   public isLoading: boolean = false;
   public errorMsg: string | null = null;
 // tslint:disable-next-line: no-object-literal-type-assertion
-  public rulesResult: RulesResult = <RulesResult> { Rules: [] };
+  public rulesResult: RulesResult = { Rules: [] } as RulesResult;
   public currentPage = 1;
   public perPage = 5;
 
@@ -81,49 +74,6 @@ export class GeoFencerViewer extends WidgetBase {
     // if (!item) return;
     // return (item.IsValid) ? 'rowvalid' : 'rowinvalid'
     return;
-  }
-
-  public LoadGeoFencerDefinitionFromFile(ev: any) {
-    // const file  = this.$refs.geofencerDefFile.files[0];
-    const file = ev.target.files[0];
-    const reader = new FileReader();
-    ev.target.value = "";
-    reader.onload = () => {
-      if (this.provider) {
-        this.provider.SetGeofencerDefinition(reader.result as string)
-        .then(() =>
-        {
-           this.GetRulesFromServer();
-          }).catch(
-          (error: Response) => {
-
-            this.errorMsg = error.statusText;
-          });
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  public LoadSimTestDataFromFile(ev: any) {
-    // const file  = this.$refs.geofencerDefFile.files[0];
-    const file = ev.target.files[0];
-    const reader = new FileReader();
-    ev.target.value = "";
-    reader.onload = () => {
-      if (this.provider) {
-        this.provider.SendSimulatorItemTestData(reader.result as string)
-        .catch((error) => this.errorMsg = error);
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  public DownloadExampleGeofencerDefinition() {
-    FileSaver.saveAs(this.ExampleRulesUrl, "geofencer-sample-rules.json");
-  }
-
-  public DownloadSampleData() {
-    FileSaver.saveAs(this.ExampleTestData, "test_data.json");
   }
 
   // Get all rules from GeoFencer service

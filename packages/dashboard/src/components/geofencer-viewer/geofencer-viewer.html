@@ -1,25 +1,7 @@
 <b-tabs content-class="mt-3">
   <b-tab title="Rules" active>
     <div class="main">
-      <label class="geofencerButton">
-        Upload geo-fencer definition
-        <input type="file" @change="LoadGeoFencerDefinitionFromFile" accept="*.json" multiple=false
-          ref="geofencerDefFile">
-      </label>
-      
-
-      <label class="geofencerButton">
-        Upload test data
-        <input type="file" @change="LoadSimTestDataFromFile" accept="*.json" multiple=false>
-      </label>
-
-      <label  class="geofencerButton">
-          <button v-on:click="DownloadExampleGeofencerDefinition">Example geo-fencer definition</button>
-      </label>
-
-      <label  class="geofencerButton">
-          <button v-on:click="DownloadSampleData">Example test data</button>
-      </label>
+     
     
 
 
@@ -70,5 +52,8 @@
   </b-tab>
   <b-tab title="Rule fire events">
       <RuleFireEvents></RuleFireEvents>
-    </b-tab>
+  </b-tab>
+  <b-tab title="Upload">
+    <Upload :provider="provider"></Upload>
+   </b-tab>
 </b-tabs>

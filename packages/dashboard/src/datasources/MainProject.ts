@@ -40,17 +40,17 @@ export class MainProject implements IDatasource {
     return this;
   }
 
-  public async SetGeofencerDefinition(geofencerDef: string) {
+  public async SetGeofencerDefinition(geofencerDef: string, useKafka: boolean) {
     const definition: FakeGeoJSONEnvelopeInterface = {
       Message: geofencerDef,
     };
-    return this.restClient.setGeofencerDefinition(definition);
+    return this.restClient.setGeofencerDefinition(definition, useKafka);
   }
 
-  public async SendSimulatorItemTestData(jsonItems: string) {
+  public async SendSimulatorItemTestData(jsonItems: string, useKafka: boolean) {
     const testData: SimulationTestData = {
       JsonTextItemArray: jsonItems,
     };
-    return this.restClient.sendSimulationTestData(testData);
+    return this.restClient.sendSimulationTestData(testData, useKafka);
   }
 }

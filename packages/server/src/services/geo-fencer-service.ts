@@ -115,7 +115,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
             }
             if ((hit) || (!hit && !initial)) {
               const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial);
-              this.kafkaService.Publish(fireInfo);
+              this.kafkaService.PublishRuleFired(fireInfo);
               this.emit('stateChangeSimulationItem', fireInfo);
             }
           }

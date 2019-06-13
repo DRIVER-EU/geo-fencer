@@ -1,11 +1,12 @@
 
-import { BadRequestException, Controller, Get, Inject, Param, Req, Put, Body } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Inject, Param, Req, Put, Body, Query } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiImplicitParam, ApiUseTags, ApiImplicitBody } from '@nestjs/swagger';
 import { StatusResult, RulesResult, AnalyseRuleResult, TestRule, ResultTestRule, FakeGeoJSONEnvelopeInterface, ResultSetGeofencerDef, SimulationTestData, ResultSimulationTestData } from '../models/rest/rest-models';
 import { IGeoJSONEnvelope } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { EvaluateGeoFencerExpression } from './../models/geofencer/EvaluateGeoFencerExpression';
 import { IItem } from 'src/models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { ManagementService } from './management.service';
+import { all } from 'bluebird';
 
 /*
 
@@ -72,11 +73,11 @@ export class ManagementController {
     type: String
   })
   @Put('Definition')
-  async SetGeoFencerDefinition(@Body() geofencerDefinition: FakeGeoJSONEnvelopeInterface /*GeoJSONEnvelopeInterface*/): Promise<ResultSetGeofencerDef | undefined> {
+  async SetGeoFencerDefinition(@Query('useKafka') useKafka: boolean, @Query() all: any, @Body() geofencerDefinition: FakeGeoJSONEnvelopeInterface /*GeoJSONEnvelopeInterface*/): Promise<ResultSetGeofencerDef | undefined> {
     if (this.service === null) throw new Error('Not initialized (yet)');
     try {
       const json = JSON.parse(geofencerDefinition.Message) as IGeoJSONEnvelope;
-      this.service.SetGeofencerDefinition(json);
+      this.service.SetGeofencerDefinition(json, (useKafka) ? (useKafka) : false);
       return new ResultSetGeofencerDef();
     } catch (e) {
       throw new BadRequestException('Geojson invalid: ' + e.message);
@@ -95,12 +96,12 @@ export class ManagementController {
     type: String
   })
   @Put('SendSimulationTestData')
-  async SendSimulationTestData(@Body() testData: SimulationTestData ): Promise<ResultSimulationTestData | undefined> {
+  async SendSimulationTestData(@Query('useKafka') useKafka: boolean, @Query() all: any, @Body() testData: SimulationTestData ): Promise<ResultSimulationTestData | undefined> {
     if (this.service === null) throw new Error('Not initialized (yet)');
     try {
 
       const json = JSON.parse(testData.JsonTextItemArray) as IItem[];
-      this.service.ApplyTestData(json);
+      this.service.ApplyTestData(json, useKafka);
       let result = new ResultSimulationTestData();
       result.Message = `Inserted ${json.length} test items.`;
       return result;

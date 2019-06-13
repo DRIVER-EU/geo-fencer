@@ -12,14 +12,22 @@ export class ManagementService {
     constructor(@Inject('GeofencerProvider') private readonly provider: GeofencerProvider) {
     }
 
-    SetGeofencerDefinition(definition: IGeoJSONEnvelope) {
+    SetGeofencerDefinition(definition: IGeoJSONEnvelope, useKafka: boolean | string) {
         this.provider.LogService.LogMessage('Received GeoFencer definition (REST call).');
-        this.provider.GeoFencerService.LoadGeofencerRule(definition);
+        if (useKafka === 'true') {
+            this.provider.TestBedKafkaService.PublishGeofencerDefinition(definition);
+        } else {
+            this.provider.GeoFencerService.LoadGeofencerRule(definition);
+        }
     }
 
-    ApplyTestData(testData: IItem[]) {
+    ApplyTestData(testData: IItem[], useKafka: boolean | string) {
         this.provider.LogService.LogMessage('Test Data (REST call).');
-        this.provider.SimulationService.InjectTestData(testData);
+        if (useKafka === 'true') {
+            this.provider.TestBedKafkaService.PublishSimItems(testData);
+        } else {
+            this.provider.SimulationService.InjectTestData(testData);
+        }
     }
 
 

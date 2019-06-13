@@ -35,11 +35,11 @@ export class GeofencerProvider {
         this.geoFencerService = new GeoFencerService(this.logService, this.configService, this.simulationService, this.kafkaTestBedService);
 
         this.geoFencerService.on('stateChangeSimulationItem', fireInfo  => { this.OnTriggerEvent(fireInfo); });
-        // this.kafkaTestBedService.ConnectToKafka();
+        this.kafkaTestBedService.ConnectToKafka();
         this.kafkaTestBedService.GenerateTestMessages();
 
-    }
 
+    }
     public SetServer(server: NestExpressApplication) {
         this.notificationService = server.get(NotificationService);
     }

@@ -20,10 +20,7 @@ import Path = require('path');
 
 // Topic names used
 export interface ITopicNames {
-    SimulationItemTopicOther: string;
-    SimulationItemTopicBlue: string;
-    SimulationItemTopicRed: string;
-    SimulationItemTopicWhite: string;
+    SimulationItemTopic: string;
     SimItemDeleted: string;
     GeoFencerDefinition: string;
     RuleFired: string;
@@ -113,13 +110,10 @@ export class ConfigService extends EventEmitter implements IConfigService {
     // Topic names used in this GeoFencer service
     GetTopicnames(): ITopicNames {
         let result: ITopicNames = {
-            SimItemDeleted:  nconf.get('SimItemDeleted') || 'simulation_entity_item-deleted',
-            SimulationItemTopicOther:  nconf.get('SimItemOther') || 'simulation_entity_item-other',
-            SimulationItemTopicBlue:  nconf.get('SimItemBlue') || 'simulation_entity_item-blue',
-            SimulationItemTopicRed:  nconf.get('SimItemRed') || 'simulation_entity_item-red',
-            SimulationItemTopicWhite:  nconf.get('SimItemWhite') || 'simulation_entity_item-white',
-            GeoFencerDefinition :  nconf.get('GeoFencerDefinition') || 'geo-fencer-definition',
-            RuleFired:  nconf.get('RuleFired') || 'rule-fired'
+            SimItemDeleted:  nconf.get('SimItemDeleted') || 'simulation_object_deleted',
+            SimulationItemTopic:  nconf.get('SimulationEntityItem') || 'simulation_entity_item',
+            GeoFencerDefinition :  nconf.get('GeoFencerDefinition') || 'standard_named_geojson',
+            RuleFired:  nconf.get('RuleFired') || 'geofencing_event'
         };
         return result;
     }
