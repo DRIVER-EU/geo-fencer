@@ -50,7 +50,8 @@ export class StatusResult {
     public KafkaServer: String;
     @ApiModelProperty({ required: true })
     public SchemaRegistryUrl: String;
-
+    @ApiModelProperty({ required: true })
+    public ConnectedToKafka: boolean;
 }
 
 export class RulesResult {

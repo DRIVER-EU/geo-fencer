@@ -56,6 +56,7 @@ export interface ITestBedKafkaService {
   PublishGeofencerDefinition(definition: IGeoJSONEnvelope): void;
   PublishSimItems(simItems: IItem[]): void;
   settings: ITestBedAdapterSettings;
+  isConnectedToKafka: boolean;
 }
 
 export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaService {
@@ -118,15 +119,21 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
 
     this.adapter.on('ready', () => {
       this.log.info(`Connected to Kafka Server '${this.kafkaSettings.kafkaHost}'. `);
-      this.adapter.on('message', (message) => this.HandleMessage(message));
-      this.adapter.on('error', (err) => this.log.error(`Consumer received an error: ${err}`));
-      this.adapter.on('offsetOutOfRange', (err) => this.log.error(`Consumer received an offsetOutOfRange error: ${err}`));
       this.logService.LogMessage('Start publishing messages to KAFKA');
       this.connectedToKafka = true;
       this.delayedPublish.start();
     });
 
-    this.adapter.on('error', e => console.error(e));
+    this.adapter.on('error', e => {
+       logService.LogErrorMessage(`Kafka adapter error: ${e}.`);
+    });
+    this.adapter.on('message', (message) => this.HandleMessage(message));
+    this.adapter.on('offsetOutOfRange', (err) => logService.LogErrorMessage(`Consumer received an offsetOutOfRange error: ${err}`));
+
+  }
+
+  public get isConnectedToKafka(): boolean {
+    return this.connectedToKafka;
   }
 
   public ConnectToKafka(): void {

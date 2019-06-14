@@ -81,6 +81,7 @@ export class ManagementService {
             Version:  npmPackage.version,
             KafkaServer: this.provider.TestBedKafkaService.settings.kafkaHost,
             SchemaRegistryUrl: this.provider.TestBedKafkaService.settings.schemaRegistryUrl,
+            ConnectedToKafka: this.provider.TestBedKafkaService.isConnectedToKafka
          };
         return x;
     }

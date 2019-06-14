@@ -1,4 +1,4 @@
-import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IItem, ObjectSubType, VehicleSubType } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { IGeoJSONEnvelope, FeatureCollectionType, PolygonType, FeatureType, IPolygon } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 
 export const testItemData: IItem = {
@@ -22,7 +22,9 @@ export const testItemData: IItem = {
     },
     visibleForParticipant: false,
     movable: false,
-    itemType: null
+    itemType: {
+      subType: VehicleSubType.MOTORCYCLE
+    }
 
   };
 
@@ -50,7 +52,9 @@ export const testItemData: IItem = {
     },
     visibleForParticipant: false,
     movable: false,
-    itemType: null
+    itemType: {
+      subType: ObjectSubType.TOOL
+    }
 
   };
 

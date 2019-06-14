@@ -3,12 +3,14 @@ import { EventEmitter } from 'events';
 
 import { Logger } from 'node-test-bed-adapter';
 
-import { ITestBedKafkaService }  from './test-bed-kafka-service';
+import { ITestBedKafkaService } from './test-bed-kafka-service';
 
 
 import { IObjectDeleted } from './../models/avro_generated/eu/driver/model/sim/simulation_object_deleted-value';
 import { IConfigService } from './config-service';
 import { ILogService } from './log-service';
+
+
 
 /**
  * Service provides the simulation items
@@ -23,23 +25,23 @@ import { ILogService } from './log-service';
  * - In the future create a seperate standalone service (method by REST and events by websocket)
  */
 export interface ISimulationService {
-   // Events fired when simulator items collection changes
-   on(event: 'newSimulationItem', listener: (Guid: string, simItem: IItem) => void): this;
-   on(event: 'updateSimulationItem', listener: (Guid: string, simItem: IItem, oldSimItem: IItem) => void): this;
-   on(event: 'deleteSimulationItem', listener: (Guid: string) => void): this;
+  // Events fired when simulator items collection changes
+  on(event: 'newSimulationItem', listener: (Guid: string, simItem: IItem) => void): this;
+  on(event: 'updateSimulationItem', listener: (Guid: string, simItem: IItem, oldSimItem: IItem) => void): this;
+  on(event: 'deleteSimulationItem', listener: (Guid: string) => void): this;
 
-   InjectTestData(items: IItem[]): void;
+  InjectTestData(items: IItem[]): void;
 }
 
 //
 export class SimulationService extends EventEmitter implements ISimulationService {
-    // Dictionary with all simulation items received from KAFKA
-    private simulationItems = new Map<string, IItem>();
+  // Dictionary with all simulation items received from KAFKA
+  private simulationItems = new Map<string, IItem>();
 
-    private log = Logger.instance;
+  private log = Logger.instance;
   constructor(
     private logService: ILogService,
-    private configService:  IConfigService,
+    private configService: IConfigService,
     private kafkaService: ITestBedKafkaService) {
     super();
     this.assignKafkaService(kafkaService);
@@ -52,27 +54,29 @@ export class SimulationService extends EventEmitter implements ISimulationServic
   }
 
   private onObjectDeleted(simItem: IObjectDeleted): void {
-      this.emit('deleteSimulationItem', simItem.guid);
-      this.simulationItems.delete(simItem.guid);
+    if (!simItem.guid) {
+      this.logService.LogErrorMessage('Received simulation item without GUID, skip simualtion item.');
+      return;
+    }
+    this.emit('deleteSimulationItem', simItem.guid);
+    this.simulationItems.delete(simItem.guid);
   }
 
   private onSimulationItemTopic(simItem: IItem): void {
-    if (simItem.hasOwnProperty('properties')) {
-      if ((simItem.properties)) {
-        const r1 = simItem.properties['prop1'] as string;
-        console.log(r1);
-      }
+    if (!simItem.guid) {
+      this.logService.LogErrorMessage('Received simulation item without GUID, skip simualtion item.');
+      return;
     }
-      // Lookup simulation entity
-      const oldSimulationItem = this.simulationItems.get(simItem.guid);
-      if (oldSimulationItem) {
-        // Update on simulation item
-        this.emit('updateSimulationItem', simItem.guid, simItem, oldSimulationItem);
-      } else {
-        // New simulation item
-        this.emit('newSimulationItem', simItem.guid, simItem);
-      }
-      this.simulationItems.set( simItem.guid, simItem);
+    // Lookup simulation entity
+    const oldSimulationItem = this.simulationItems.get(simItem.guid);
+    if (oldSimulationItem) {
+      // Update on simulation item
+      this.emit('updateSimulationItem', simItem.guid, simItem, oldSimulationItem);
+    } else {
+      // New simulation item
+      this.emit('newSimulationItem', simItem.guid, simItem);
+    }
+    this.simulationItems.set(simItem.guid, simItem);
   }
 
   public InjectTestData(items: IItem[]) {

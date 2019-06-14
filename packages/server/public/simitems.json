@@ -20,7 +20,9 @@
     },
     "visibleForParticipant": false,
     "movable": false,
-    "itemType": null
+    "itemType": {
+	    "subType":"TRUCK"
+	}
   },
   {
     "guid": "TESTITEM2",
@@ -43,6 +45,10 @@
     },
     "visibleForParticipant": false,
     "movable": false,
-    "itemType": null
+    "itemType": null,
+	"properties": {
+        "prop1": "value1",
+        "prop2": "value2"
+    }
   }
 ]

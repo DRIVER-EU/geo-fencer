@@ -9,11 +9,21 @@ expression
  | NOT expression                                 #notExpression
  | leftside=expression expressionoperator=comparator rightside=expression #comparatorExpression
  | leftside=expression expressionoperator=binary rightside=expression     #binaryExpression
+ | PROP_START propertyKey=propKey PROP_END propertyOperator=comparator propertyValue=propValue #propExpression
  | bool                                           #boolExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  | STRING                                         #stringExpression
  | arrayofstring                                    #arrayOfStringsExpression
+ ;
+
+propKey
+ : PROPNAME                                         #propKeyExpression
+ ;
+
+
+propValue
+ : PROPNAME                                         #propValueExpression
  ;
 
 comparator
@@ -46,6 +56,9 @@ EQ         : '=' ;
 LIKE       : 'LIKE' ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
+PROP_START : 'PROP[';
+PROP_END   : ']';
+PROPNAME   : '\'' ( ~['] )*? '\'' ;
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
 IDENTIFIER : [a-zA-Z_] [a-zA-Z_0-9]* ;
 /* STRING     : '\'' ([a-zA-Z_0-9])* '\'' ; */

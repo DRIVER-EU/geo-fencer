@@ -8,7 +8,7 @@ import "./sandbox-rule.css";
 
 const simItem: string = '{ \n \
     "guid": "TEST1",\n\
-    "name": "TEST2",\n\
+    "name": "Truck_12",\n\
     "owner": "",\n\
      "location": {\n\
       "altitude": 0.0,\n\
@@ -27,7 +27,13 @@ const simItem: string = '{ \n \
     },\n\
     "visibleForParticipant": false,\n\
     "movable": false,\n\
-    "itemType": null\n\
+    "itemType": {\n\
+	    "subType":"TRUCK"\n\
+	  },\n\
+    "properties": {\n\
+      "ForceIdentifier": "Opposing"\n\
+      "Weight": "15"\n\
+    }\n\
   }';
 
 @Component({
@@ -37,8 +43,7 @@ const simItem: string = '{ \n \
 } as any)
 export class SandboxRule extends WidgetBase {
 
-    public expressionText: string = "GUID = 'TEST1' AND " +
-      "(NAME = 'TEST2' OR GUID =  'TEST2' ) AND ObjectType = 'Vehicle'";
+    public expressionText: string = "((NAME LIKE '^Truck_[0-9]{1,5}$') OR (NAME = 'TARGET'))  AND ForceIdentifier = 'Opposing' AND PROP['Weight'] > '20'";
     public testData: string = simItem;
     public errorMsg: string = "";
     public restCallCompleted = false;
