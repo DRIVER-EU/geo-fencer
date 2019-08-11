@@ -40,14 +40,14 @@ export class GeoFencerExpressionParser extends Parser {
 	public static readonly LE = 11;
 	public static readonly EQ = 12;
 	public static readonly LIKE = 13;
-	public static readonly LPAREN = 14;
-	public static readonly RPAREN = 15;
-	public static readonly PROP_START = 16;
-	public static readonly PROP_END = 17;
-	public static readonly PROPNAME = 18;
+	public static readonly IN = 14;
+	public static readonly LPAREN = 15;
+	public static readonly RPAREN = 16;
+	public static readonly PROP_START = 17;
+	public static readonly PROP_END = 18;
 	public static readonly DECIMAL = 19;
 	public static readonly IDENTIFIER = 20;
-	public static readonly STRING = 21;
+	public static readonly TEXTFIELD = 21;
 	public static readonly WS = 22;
 	public static readonly RULE_parse = 0;
 	public static readonly RULE_expression = 1;
@@ -56,22 +56,22 @@ export class GeoFencerExpressionParser extends Parser {
 	public static readonly RULE_comparator = 4;
 	public static readonly RULE_binary = 5;
 	public static readonly RULE_bool = 6;
-	public static readonly RULE_arrayofstring = 7;
+	public static readonly RULE_arrayoftext = 7;
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
 		"parse", "expression", "propKey", "propValue", "comparator", "binary", 
-		"bool", "arrayofstring",
+		"bool", "arrayoftext",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
 		undefined, "'['", "','", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", 
-		"'>'", "'>='", "'<'", "'<='", "'='", "'LIKE'", "'('", "')'", "'PROP['", 
+		"'>'", "'>='", "'<'", "'<='", "'='", "'LIKE'", "'IN'", "'('", "')'", "'PROP['", 
 		"']'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, undefined, undefined, "AND", "OR", "NOT", "TRUE", "FALSE", 
-		"GT", "GE", "LT", "LE", "EQ", "LIKE", "LPAREN", "RPAREN", "PROP_START", 
-		"PROP_END", "PROPNAME", "DECIMAL", "IDENTIFIER", "STRING", "WS",
+		"GT", "GE", "LT", "LE", "EQ", "LIKE", "IN", "LPAREN", "RPAREN", "PROP_START", 
+		"PROP_END", "DECIMAL", "IDENTIFIER", "TEXTFIELD", "WS",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(GeoFencerExpressionParser._LITERAL_NAMES, GeoFencerExpressionParser._SYMBOLIC_NAMES, []);
 
@@ -169,20 +169,29 @@ export class GeoFencerExpressionParser extends Parser {
 				this.expression(9);
 				}
 				break;
+			case GeoFencerExpressionParser.TEXTFIELD:
+				{
+				_localctx = new TextfieldExpressionContext(_localctx);
+				this._ctx = _localctx;
+				_prevctx = _localctx;
+				this.state = 26;
+				this.match(GeoFencerExpressionParser.TEXTFIELD);
+				}
+				break;
 			case GeoFencerExpressionParser.PROP_START:
 				{
 				_localctx = new PropExpressionContext(_localctx);
 				this._ctx = _localctx;
 				_prevctx = _localctx;
-				this.state = 26;
-				this.match(GeoFencerExpressionParser.PROP_START);
 				this.state = 27;
-				(_localctx as PropExpressionContext)._propertyKey = this.propKey();
+				this.match(GeoFencerExpressionParser.PROP_START);
 				this.state = 28;
-				this.match(GeoFencerExpressionParser.PROP_END);
+				(_localctx as PropExpressionContext)._propertyKey = this.propKey();
 				this.state = 29;
-				(_localctx as PropExpressionContext)._propertyOperator = this.comparator();
+				this.match(GeoFencerExpressionParser.PROP_END);
 				this.state = 30;
+				(_localctx as PropExpressionContext)._propertyOperator = this.comparator();
+				this.state = 31;
 				(_localctx as PropExpressionContext)._propertyValue = this.propValue();
 				}
 				break;
@@ -192,7 +201,7 @@ export class GeoFencerExpressionParser extends Parser {
 				_localctx = new BoolExpressionContext(_localctx);
 				this._ctx = _localctx;
 				_prevctx = _localctx;
-				this.state = 32;
+				this.state = 33;
 				this.bool();
 				}
 				break;
@@ -201,7 +210,7 @@ export class GeoFencerExpressionParser extends Parser {
 				_localctx = new IdentifierExpressionContext(_localctx);
 				this._ctx = _localctx;
 				_prevctx = _localctx;
-				this.state = 33;
+				this.state = 34;
 				this.match(GeoFencerExpressionParser.IDENTIFIER);
 				}
 				break;
@@ -210,26 +219,17 @@ export class GeoFencerExpressionParser extends Parser {
 				_localctx = new DecimalExpressionContext(_localctx);
 				this._ctx = _localctx;
 				_prevctx = _localctx;
-				this.state = 34;
-				this.match(GeoFencerExpressionParser.DECIMAL);
-				}
-				break;
-			case GeoFencerExpressionParser.STRING:
-				{
-				_localctx = new StringExpressionContext(_localctx);
-				this._ctx = _localctx;
-				_prevctx = _localctx;
 				this.state = 35;
-				this.match(GeoFencerExpressionParser.STRING);
+				this.match(GeoFencerExpressionParser.DECIMAL);
 				}
 				break;
 			case GeoFencerExpressionParser.T__0:
 				{
-				_localctx = new ArrayOfStringsExpressionContext(_localctx);
+				_localctx = new ArrayOfTextExpressionContext(_localctx);
 				this._ctx = _localctx;
 				_prevctx = _localctx;
 				this.state = 36;
-				this.arrayofstring();
+				this.arrayoftext();
 				}
 				break;
 			default:
@@ -312,7 +312,7 @@ export class GeoFencerExpressionParser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 52;
-			this.match(GeoFencerExpressionParser.PROPNAME);
+			this.match(GeoFencerExpressionParser.TEXTFIELD);
 			}
 		}
 		catch (re) {
@@ -338,7 +338,7 @@ export class GeoFencerExpressionParser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 54;
-			this.match(GeoFencerExpressionParser.PROPNAME);
+			this.match(GeoFencerExpressionParser.TEXTFIELD);
 			}
 		}
 		catch (re) {
@@ -365,7 +365,7 @@ export class GeoFencerExpressionParser extends Parser {
 			{
 			this.state = 56;
 			_la = this._input.LA(1);
-			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << GeoFencerExpressionParser.GT) | (1 << GeoFencerExpressionParser.GE) | (1 << GeoFencerExpressionParser.LT) | (1 << GeoFencerExpressionParser.LE) | (1 << GeoFencerExpressionParser.EQ) | (1 << GeoFencerExpressionParser.LIKE))) !== 0))) {
+			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << GeoFencerExpressionParser.GT) | (1 << GeoFencerExpressionParser.GE) | (1 << GeoFencerExpressionParser.LT) | (1 << GeoFencerExpressionParser.LE) | (1 << GeoFencerExpressionParser.EQ) | (1 << GeoFencerExpressionParser.LIKE) | (1 << GeoFencerExpressionParser.IN))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -464,9 +464,9 @@ export class GeoFencerExpressionParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public arrayofstring(): ArrayofstringContext {
-		let _localctx: ArrayofstringContext = new ArrayofstringContext(this._ctx, this.state);
-		this.enterRule(_localctx, 14, GeoFencerExpressionParser.RULE_arrayofstring);
+	public arrayoftext(): ArrayoftextContext {
+		let _localctx: ArrayoftextContext = new ArrayoftextContext(this._ctx, this.state);
+		this.enterRule(_localctx, 14, GeoFencerExpressionParser.RULE_arrayoftext);
 		let _la: number;
 		try {
 			this.state = 74;
@@ -478,7 +478,7 @@ export class GeoFencerExpressionParser extends Parser {
 				this.state = 62;
 				this.match(GeoFencerExpressionParser.T__0);
 				this.state = 63;
-				this.match(GeoFencerExpressionParser.STRING);
+				this.match(GeoFencerExpressionParser.TEXTFIELD);
 				this.state = 68;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
@@ -488,7 +488,7 @@ export class GeoFencerExpressionParser extends Parser {
 					this.state = 64;
 					this.match(GeoFencerExpressionParser.T__1);
 					this.state = 65;
-					this.match(GeoFencerExpressionParser.STRING);
+					this.match(GeoFencerExpressionParser.TEXTFIELD);
 					}
 					}
 					this.state = 70;
@@ -555,28 +555,28 @@ export class GeoFencerExpressionParser extends Parser {
 		"\x06\x03\x07\x03\x07\x03\b\x03\b\x03\t\x03\t\x03\t\x03\t\x07\tE\n\t\f" +
 		"\t\x0E\tH\v\t\x03\t\x03\t\x03\t\x05\tM\n\t\x03\t\x02\x02\x03\x04\n\x02" +
 		"\x02\x04\x02\x06\x02\b\x02\n\x02\f\x02\x0E\x02\x10\x02\x02\x05\x03\x02" +
-		"\n\x0F\x03\x02\x05\x06\x03\x02\b\t\x02Q\x02\x12\x03\x02\x02\x02\x04\'" +
+		"\n\x10\x03\x02\x05\x06\x03\x02\b\t\x02Q\x02\x12\x03\x02\x02\x02\x04\'" +
 		"\x03\x02\x02\x02\x066\x03\x02\x02\x02\b8\x03\x02\x02\x02\n:\x03\x02\x02" +
 		"\x02\f<\x03\x02\x02\x02\x0E>\x03\x02\x02\x02\x10L\x03\x02\x02\x02\x12" +
 		"\x13\x05\x04\x03\x02\x13\x14\x07\x02\x02\x03\x14\x03\x03\x02\x02\x02\x15" +
-		"\x16\b\x03\x01\x02\x16\x17\x07\x10\x02\x02\x17\x18\x05\x04\x03\x02\x18" +
-		"\x19\x07\x11\x02\x02\x19(\x03\x02\x02\x02\x1A\x1B\x07\x07\x02\x02\x1B" +
-		"(\x05\x04\x03\v\x1C\x1D\x07\x12\x02\x02\x1D\x1E\x05\x06\x04\x02\x1E\x1F" +
-		"\x07\x13\x02\x02\x1F \x05\n\x06\x02 !\x05\b\x05\x02!(\x03\x02\x02\x02" +
-		"\"(\x05\x0E\b\x02#(\x07\x16\x02\x02$(\x07\x15\x02\x02%(\x07\x17\x02\x02" +
-		"&(\x05\x10\t\x02\'\x15\x03\x02\x02\x02\'\x1A\x03\x02\x02\x02\'\x1C\x03" +
-		"\x02\x02\x02\'\"\x03\x02\x02\x02\'#\x03\x02\x02\x02\'$\x03\x02\x02\x02" +
+		"\x16\b\x03\x01\x02\x16\x17\x07\x11\x02\x02\x17\x18\x05\x04\x03\x02\x18" +
+		"\x19\x07\x12\x02\x02\x19(\x03\x02\x02\x02\x1A\x1B\x07\x07\x02\x02\x1B" +
+		"(\x05\x04\x03\v\x1C(\x07\x17\x02\x02\x1D\x1E\x07\x13\x02\x02\x1E\x1F\x05" +
+		"\x06\x04\x02\x1F \x07\x14\x02\x02 !\x05\n\x06\x02!\"\x05\b\x05\x02\"(" +
+		"\x03\x02\x02\x02#(\x05\x0E\b\x02$(\x07\x16\x02\x02%(\x07\x15\x02\x02&" +
+		"(\x05\x10\t\x02\'\x15\x03\x02\x02\x02\'\x1A\x03\x02\x02\x02\'\x1C\x03" +
+		"\x02\x02\x02\'\x1D\x03\x02\x02\x02\'#\x03\x02\x02\x02\'$\x03\x02\x02\x02" +
 		"\'%\x03\x02\x02\x02\'&\x03\x02\x02\x02(3\x03\x02\x02\x02)*\f\n\x02\x02" +
 		"*+\x05\n\x06\x02+,\x05\x04\x03\v,2\x03\x02\x02\x02-.\f\t\x02\x02./\x05" +
 		"\f\x07\x02/0\x05\x04\x03\n02\x03\x02\x02\x021)\x03\x02\x02\x021-\x03\x02" +
 		"\x02\x0225\x03\x02\x02\x0231\x03\x02\x02\x0234\x03\x02\x02\x024\x05\x03" +
-		"\x02\x02\x0253\x03\x02\x02\x0267\x07\x14\x02\x027\x07\x03\x02\x02\x02" +
-		"89\x07\x14\x02\x029\t\x03\x02\x02\x02:;\t\x02\x02\x02;\v\x03\x02\x02\x02" +
+		"\x02\x02\x0253\x03\x02\x02\x0267\x07\x17\x02\x027\x07\x03\x02\x02\x02" +
+		"89\x07\x17\x02\x029\t\x03\x02\x02\x02:;\t\x02\x02\x02;\v\x03\x02\x02\x02" +
 		"<=\t\x03\x02\x02=\r\x03\x02\x02\x02>?\t\x04\x02\x02?\x0F\x03\x02\x02\x02" +
 		"@A\x07\x03\x02\x02AF\x07\x17\x02\x02BC\x07\x04\x02\x02CE\x07\x17\x02\x02" +
 		"DB\x03\x02\x02\x02EH\x03\x02\x02\x02FD\x03\x02\x02\x02FG\x03\x02\x02\x02" +
-		"GI\x03\x02\x02\x02HF\x03\x02\x02\x02IM\x07\x13\x02\x02JK\x07\x03\x02\x02" +
-		"KM\x07\x13\x02\x02L@\x03\x02\x02\x02LJ\x03\x02\x02\x02M\x11\x03\x02\x02" +
+		"GI\x03\x02\x02\x02HF\x03\x02\x02\x02IM\x07\x14\x02\x02JK\x07\x03\x02\x02" +
+		"KM\x07\x14\x02\x02L@\x03\x02\x02\x02LJ\x03\x02\x02\x02M\x11\x03\x02\x02" +
 		"\x02\x07\'13FL";
 	public static __ATN: ATN;
 	public static get _ATN(): ATN {
@@ -715,6 +715,21 @@ export class BinaryExpressionContext extends ExpressionContext {
 		}
 	}
 }
+export class TextfieldExpressionContext extends ExpressionContext {
+	public TEXTFIELD(): TerminalNode { return this.getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
+	constructor(ctx: ExpressionContext) {
+		super(ctx.parent, ctx.invokingState);
+		this.copyFrom(ctx);
+	}
+	// @Override
+	public accept<Result>(visitor: GeoFencerExpressionVisitor<Result>): Result {
+		if (visitor.visitTextfieldExpression) {
+			return visitor.visitTextfieldExpression(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
 export class PropExpressionContext extends ExpressionContext {
 	public _propertyKey: PropKeyContext;
 	public _propertyOperator: ComparatorContext;
@@ -790,24 +805,9 @@ export class DecimalExpressionContext extends ExpressionContext {
 		}
 	}
 }
-export class StringExpressionContext extends ExpressionContext {
-	public STRING(): TerminalNode { return this.getToken(GeoFencerExpressionParser.STRING, 0); }
-	constructor(ctx: ExpressionContext) {
-		super(ctx.parent, ctx.invokingState);
-		this.copyFrom(ctx);
-	}
-	// @Override
-	public accept<Result>(visitor: GeoFencerExpressionVisitor<Result>): Result {
-		if (visitor.visitStringExpression) {
-			return visitor.visitStringExpression(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-export class ArrayOfStringsExpressionContext extends ExpressionContext {
-	public arrayofstring(): ArrayofstringContext {
-		return this.getRuleContext(0, ArrayofstringContext);
+export class ArrayOfTextExpressionContext extends ExpressionContext {
+	public arrayoftext(): ArrayoftextContext {
+		return this.getRuleContext(0, ArrayoftextContext);
 	}
 	constructor(ctx: ExpressionContext) {
 		super(ctx.parent, ctx.invokingState);
@@ -815,8 +815,8 @@ export class ArrayOfStringsExpressionContext extends ExpressionContext {
 	}
 	// @Override
 	public accept<Result>(visitor: GeoFencerExpressionVisitor<Result>): Result {
-		if (visitor.visitArrayOfStringsExpression) {
-			return visitor.visitArrayOfStringsExpression(this);
+		if (visitor.visitArrayOfTextExpression) {
+			return visitor.visitArrayOfTextExpression(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -835,7 +835,7 @@ export class PropKeyContext extends ParserRuleContext {
 	}
 }
 export class PropKeyExpressionContext extends PropKeyContext {
-	public PROPNAME(): TerminalNode { return this.getToken(GeoFencerExpressionParser.PROPNAME, 0); }
+	public TEXTFIELD(): TerminalNode { return this.getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
 	constructor(ctx: PropKeyContext) {
 		super(ctx.parent, ctx.invokingState);
 		this.copyFrom(ctx);
@@ -862,7 +862,7 @@ export class PropValueContext extends ParserRuleContext {
 	}
 }
 export class PropValueExpressionContext extends PropValueContext {
-	public PROPNAME(): TerminalNode { return this.getToken(GeoFencerExpressionParser.PROPNAME, 0); }
+	public TEXTFIELD(): TerminalNode { return this.getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
 	constructor(ctx: PropValueContext) {
 		super(ctx.parent, ctx.invokingState);
 		this.copyFrom(ctx);
@@ -885,6 +885,7 @@ export class ComparatorContext extends ParserRuleContext {
 	public LE(): TerminalNode | undefined { return this.tryGetToken(GeoFencerExpressionParser.LE, 0); }
 	public EQ(): TerminalNode | undefined { return this.tryGetToken(GeoFencerExpressionParser.EQ, 0); }
 	public LIKE(): TerminalNode | undefined { return this.tryGetToken(GeoFencerExpressionParser.LIKE, 0); }
+	public IN(): TerminalNode | undefined { return this.tryGetToken(GeoFencerExpressionParser.IN, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
@@ -939,14 +940,14 @@ export class BoolContext extends ParserRuleContext {
 }
 
 
-export class ArrayofstringContext extends ParserRuleContext {
-	public STRING(): TerminalNode[];
-	public STRING(i: number): TerminalNode;
-	public STRING(i?: number): TerminalNode | TerminalNode[] {
+export class ArrayoftextContext extends ParserRuleContext {
+	public TEXTFIELD(): TerminalNode[];
+	public TEXTFIELD(i: number): TerminalNode;
+	public TEXTFIELD(i?: number): TerminalNode | TerminalNode[] {
 		if (i === undefined) {
-			return this.getTokens(GeoFencerExpressionParser.STRING);
+			return this.getTokens(GeoFencerExpressionParser.TEXTFIELD);
 		} else {
-			return this.getToken(GeoFencerExpressionParser.STRING, i);
+			return this.getToken(GeoFencerExpressionParser.TEXTFIELD, i);
 		}
 	}
 	public PROP_END(): TerminalNode { return this.getToken(GeoFencerExpressionParser.PROP_END, 0); }
@@ -954,11 +955,11 @@ export class ArrayofstringContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return GeoFencerExpressionParser.RULE_arrayofstring; }
+	public get ruleIndex(): number { return GeoFencerExpressionParser.RULE_arrayoftext; }
 	// @Override
 	public accept<Result>(visitor: GeoFencerExpressionVisitor<Result>): Result {
-		if (visitor.visitArrayofstring) {
-			return visitor.visitArrayofstring(this);
+		if (visitor.visitArrayoftext) {
+			return visitor.visitArrayoftext(this);
 		} else {
 			return visitor.visitChildren(this);
 		}

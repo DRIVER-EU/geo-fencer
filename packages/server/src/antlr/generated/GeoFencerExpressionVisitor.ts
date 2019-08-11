@@ -7,12 +7,12 @@ import { ParenExpressionContext } from "./GeoFencerExpressionParser";
 import { NotExpressionContext } from "./GeoFencerExpressionParser";
 import { ComparatorExpressionContext } from "./GeoFencerExpressionParser";
 import { BinaryExpressionContext } from "./GeoFencerExpressionParser";
+import { TextfieldExpressionContext } from "./GeoFencerExpressionParser";
 import { PropExpressionContext } from "./GeoFencerExpressionParser";
 import { BoolExpressionContext } from "./GeoFencerExpressionParser";
 import { IdentifierExpressionContext } from "./GeoFencerExpressionParser";
 import { DecimalExpressionContext } from "./GeoFencerExpressionParser";
-import { StringExpressionContext } from "./GeoFencerExpressionParser";
-import { ArrayOfStringsExpressionContext } from "./GeoFencerExpressionParser";
+import { ArrayOfTextExpressionContext } from "./GeoFencerExpressionParser";
 import { PropValueExpressionContext } from "./GeoFencerExpressionParser";
 import { PropKeyExpressionContext } from "./GeoFencerExpressionParser";
 import { ParseContext } from "./GeoFencerExpressionParser";
@@ -22,7 +22,7 @@ import { PropValueContext } from "./GeoFencerExpressionParser";
 import { ComparatorContext } from "./GeoFencerExpressionParser";
 import { BinaryContext } from "./GeoFencerExpressionParser";
 import { BoolContext } from "./GeoFencerExpressionParser";
-import { ArrayofstringContext } from "./GeoFencerExpressionParser";
+import { ArrayoftextContext } from "./GeoFencerExpressionParser";
 
 
 /**
@@ -66,6 +66,14 @@ export interface GeoFencerExpressionVisitor<Result> extends ParseTreeVisitor<Res
 	visitBinaryExpression?: (ctx: BinaryExpressionContext) => Result;
 
 	/**
+	 * Visit a parse tree produced by the `textfieldExpression`
+	 * labeled alternative in `GeoFencerExpressionParser.expression`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitTextfieldExpression?: (ctx: TextfieldExpressionContext) => Result;
+
+	/**
 	 * Visit a parse tree produced by the `propExpression`
 	 * labeled alternative in `GeoFencerExpressionParser.expression`.
 	 * @param ctx the parse tree
@@ -98,20 +106,12 @@ export interface GeoFencerExpressionVisitor<Result> extends ParseTreeVisitor<Res
 	visitDecimalExpression?: (ctx: DecimalExpressionContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by the `stringExpression`
+	 * Visit a parse tree produced by the `arrayOfTextExpression`
 	 * labeled alternative in `GeoFencerExpressionParser.expression`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitStringExpression?: (ctx: StringExpressionContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by the `arrayOfStringsExpression`
-	 * labeled alternative in `GeoFencerExpressionParser.expression`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitArrayOfStringsExpression?: (ctx: ArrayOfStringsExpressionContext) => Result;
+	visitArrayOfTextExpression?: (ctx: ArrayOfTextExpressionContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by the `propValueExpression`
@@ -179,10 +179,10 @@ export interface GeoFencerExpressionVisitor<Result> extends ParseTreeVisitor<Res
 	visitBool?: (ctx: BoolContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `GeoFencerExpressionParser.arrayofstring`.
+	 * Visit a parse tree produced by `GeoFencerExpressionParser.arrayoftext`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitArrayofstring?: (ctx: ArrayofstringContext) => Result;
+	visitArrayoftext?: (ctx: ArrayoftextContext) => Result;
 }
 
