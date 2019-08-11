@@ -31,10 +31,10 @@ class NumberGenerator {
 }
 
 export class TriggerArea {
+    private readonly PropertyNameID = 'ID';
+    private readonly PropertyNameRule = 'GeoFencerRule';
 
     private runtimeUniqueID: number;
-
-    private readonly RulePropertyName = 'GeoFencerRule';
 
     private triggerAreaTurf: TurfFeature | null = null;
     private geoFencerDef: IFeature;
@@ -46,13 +46,18 @@ export class TriggerArea {
     private validatedItems: { [id: string]: ISimItemStatus; } = {};
 
     constructor(owner: GeoFencerDefinition, area: IFeature) {
+        if ((!area.properties) ||
+            (!area.properties.hasOwnProperty(this.PropertyNameID) ||
+            (!area.properties.hasOwnProperty(this.PropertyNameRule)))) {
+                throw new Error(`All geojson features must have properties "${this.PropertyNameID}" and "${this.PropertyNameRule}" `);
+            }
         this.runtimeUniqueID = NumberGenerator.GetUniqueNumber();
         this.geoFencerDef = area;
         this.owner = owner;
-        this.owner.LogService.LogMessage(`Creating rule ${this.TriggerAreaId} (ID:${this.runtimeUniqueID})`);
+        this.owner.LogService.LogMessage(`Creating rule '${this.TriggerAreaId}' and assign ID ${this.runtimeUniqueID})`);
         this.CreateTurfTriggerArea();
         this.CreateTriggerCondition();
-        if (!this.ExpressionIsValid) this.owner.LogService.LogErrorMessage(`Rule ${this.runtimeUniqueID} is disabled (missing information).`);
+        if (!this.ExpressionIsValid) this.owner.LogService.LogErrorMessage(`Rule ${this.runtimeUniqueID} is disabled (rule is not valid).`);
     }
 
     // Get area from GeoJson Feature and convert it into (GeoJson) turf object
@@ -94,10 +99,8 @@ export class TriggerArea {
     }
 
     private CreateTriggerCondition() {
-        const rule = this.geoFencerDef.properties[this.RulePropertyName] as string;
+        const rule = this.geoFencerDef.properties[this.PropertyNameRule] as string;
         // A slash symbol '/' is not a special character, but in JavaScript it is used to open and close the regexp
-
-
         console.log(rule);
         if (rule) {
             this.evalExpression = new EvaluateGeoFencerExpression(rule);
@@ -116,7 +119,7 @@ export class TriggerArea {
 
                     });
             }
-        } else this.owner.LogService.LogErrorMessage(`Property '${this.RulePropertyName}' not found, can not make rule`);
+        } else this.owner.LogService.LogErrorMessage(`Property '${this.PropertyNameRule}' not found, can not make rule`);
     }
 
     public SimulationItemDeleted(guid: string) {
@@ -137,9 +140,9 @@ export class TriggerArea {
                     const oldStatus = this.validatedItems[simItem.guid] as ISimItemStatus; // Lookup last status
                     const oldHit = oldStatus.InGeographicArea && oldStatus.IsExpressionValid;
                     const newHit = inArea && ruleMatch;
-                    if (oldHit !== newHit) {
+                    //if (oldHit !== newHit) {
                         callback.OnChangeTrigger(this, simItem, newHit, false);
-                    }
+                    //}
                     const newStatus: ISimItemStatus = {
                         InGeographicArea: inArea,
                         IsExpressionValid: ruleMatch,
@@ -192,7 +195,7 @@ export class TriggerArea {
     }
 
     get TriggerAreaId(): string {
-        let id = this.geoFencerDef.properties['ID'];
+        let id = this.geoFencerDef.properties[this.PropertyNameID];
         return (id) ? id + '' : '<unknown>';
     }
 

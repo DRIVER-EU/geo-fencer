@@ -16,7 +16,7 @@ import {
   ComparatorContext,
   BinaryContext,
   BoolContext,
-  StringExpressionContext,
+  TextfieldExpressionContext,
   PropExpressionContext,
   PropValueExpressionContext,
   PropKeyExpressionContext,
@@ -128,7 +128,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
             return true;
         }
       } else {
-        this.substitutedExpression += `${propertyValue} not found`;
+        this.substitutedExpression += `property ${propertyKey} not found on simitem`;
       }
       return false;
     } else return false;
@@ -173,7 +173,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
   }
 
   // Return the value of the literial string
-  visitStringExpression(ctx: StringExpressionContext) {
+  visitTextfieldExpression(ctx: TextfieldExpressionContext) {
     // remove quates
     return ctx.text.substring(1, ctx.text.length - 1);
   }
@@ -193,14 +193,14 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
         case ExpressionProperty.Guid:
           switch (operator) {
             case ExpressionOperator.Equals:
-              if (ctx._rightside instanceof StringExpressionContext) {
+              if (ctx._rightside instanceof TextfieldExpressionContext) {
                 const propertyValue = (this.visit(ctx._rightside));
                 let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
                 return result;
               } else this.ThrowException(ctx, `Can only compare ${propertyName} with text value.`);
               break;
             case ExpressionOperator.Like:
-              if (ctx._rightside instanceof StringExpressionContext) {
+              if (ctx._rightside instanceof TextfieldExpressionContext) {
                 const propertyValue = (this.visit(ctx._rightside));
                 let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
                 return result;
@@ -213,7 +213,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
         case ExpressionProperty.ObjectType:
           switch (operator) {
             case ExpressionOperator.Equals:
-              if (ctx._rightside instanceof StringExpressionContext) {
+              if (ctx._rightside instanceof TextfieldExpressionContext) {
                 const propertyValue = (this.visit(ctx._rightside));
                 let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
                 return result;
@@ -227,7 +227,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
         case ExpressionProperty.ForceIdentifier:
           switch (operator) {
             case ExpressionOperator.Equals:
-              if (ctx._rightside instanceof StringExpressionContext) {
+              if (ctx._rightside instanceof TextfieldExpressionContext) {
                 const propertyValue = (this.visit(ctx._rightside));
                 let result = this.ValidateProperty(propertyEnum, operator, propertyValue);
                 return result;
@@ -364,7 +364,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
           return this.stringEqualsIgnoreCase(currentValue, propertyValue);
         }
         if (operator === ExpressionOperator.Like) {
-          // TODO cache regex expression  
+          // TODO cache regex expression
           const regexp = new RegExp(`${propertyValue}`);
           const currentValue = this.simItem.name || '';
           this.substitutedExpression += `RegExp("${currentValue}" , "${propertyValue}")`;
@@ -387,7 +387,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
           const currentValue = getForceIdentifier(this.simItem);
           const ruleValue = stringToForceIdentifier(propertyValue);
           if (currentValue === ForceIdentifier.Invalid) {
-            throw new GeoFencerExpressionError(`Simulation item property ${propertyName} has invalid value ${propertyValue}, allowed values [${Object.keys(ForceIdentifier).join(', ')}] `);
+            throw new GeoFencerExpressionError(`Simulation item property '${propertyName} has invalid value ${propertyValue}, allowed values [${Object.keys(ForceIdentifier).join(', ')}] `);
           }
           if (ruleValue === ForceIdentifier.Invalid) {
             throw new GeoFencerExpressionError(`Rule property ${propertyName} has invalid value ${ruleValue}, allowed values [${Object.keys(ForceIdentifier).join(', ')}] `);

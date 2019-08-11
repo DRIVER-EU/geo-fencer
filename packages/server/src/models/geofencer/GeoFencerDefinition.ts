@@ -1,7 +1,7 @@
 import { IGeoJSONEnvelope } from '../avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { TriggerArea } from './TriggerArea';
 import { IItem } from './../../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
-import {  IGeoFencerTrigger } from './TriggerEvents';
+import { IGeoFencerTrigger } from './TriggerEvents';
 import { ILogService } from 'src/services/log-service';
 
 /*
@@ -9,18 +9,42 @@ Convert GeoJSONEnvelope to list of trigger areas
 */
 export class GeoFencerDefinition {
 
+    private readonly PropertyNameID = 'ID';
+    private readonly PropertyNameType = 'Type';
+    private readonly PropertyNameTitle = 'Title';
+
     public triggerAreas: TriggerArea[] = [];
-    private geoFencerDefinition: IGeoJSONEnvelope;
+    private definition: IGeoJSONEnvelope;
 
 
     constructor(
         public logService: ILogService,
         geoFencerDefinition: IGeoJSONEnvelope) {
-        this.geoFencerDefinition = geoFencerDefinition;
-        if ((geoFencerDefinition.geojson) && (geoFencerDefinition.geojson.features)) {
-           this.triggerAreas =
-               geoFencerDefinition.geojson.features.map(area => new TriggerArea(this, area));
+        if (!geoFencerDefinition) throw new Error('Can not load GeoFencer definition when null.');
+        if ((!geoFencerDefinition.properties) ||
+            (!geoFencerDefinition.properties.hasOwnProperty(this.PropertyNameID)) ||
+            (!geoFencerDefinition.properties.hasOwnProperty(this.PropertyNameType))) {
+            throw new Error(`The GeoJSON Properties "${this.PropertyNameID}"="<unique id>" and "${this.PropertyNameType}"="GeoFencerDefinition" are mandatory in GeoFencer definition.`);
         }
+        const geoJsonType: string = geoFencerDefinition.properties[this.PropertyNameType] as string || '';
+
+        if ((geoJsonType.toLocaleUpperCase() !== 'GEOFENCERDEFINITION')) {
+            throw new Error(`The GeoJSON property "${this.PropertyNameType}" in the GeoFencerDefinition must have value "GeoFencerDefinition".`);
+        }
+
+        const ID: string = geoFencerDefinition.properties[this.PropertyNameID] as string;
+        const Title: string = geoFencerDefinition.properties.hasOwnProperty(this.PropertyNameTitle) ? geoFencerDefinition.properties[this.PropertyNameTitle] as string : '';
+
+        this.definition = geoFencerDefinition;
+        logService.LogMessage(`Load Geo Fencer Definition "${Title}" with ID "${ID}".`);
+        if ((geoFencerDefinition.geojson) && (geoFencerDefinition.geojson.features)) {
+            this.triggerAreas =
+                geoFencerDefinition.geojson.features.map(area => new TriggerArea(this, area));
+        } else logService.LogMessage('No geofencer rules defined in GeoFencer definition');
+
+    }
+
+    private ValidateHeaderGeoFencerDefintion(geoFencerDefinition: IGeoJSONEnvelope) {
 
     }
 
@@ -40,7 +64,7 @@ export class GeoFencerDefinition {
     }
 
     public GetGeoFencerDefinitionId(): string {
-        let id = (this.geoFencerDefinition.properties) ? this.geoFencerDefinition.properties['ID'] : null;
+        let id = (this.definition.properties) ? this.definition.properties['ID'] : null;
         return (id) ? id + '' : '<unknown>';
     }
 }

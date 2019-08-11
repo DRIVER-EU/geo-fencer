@@ -28,8 +28,8 @@ export class EvaluateGeoFencerExpression {
   // The compiled expression (ANTLR)
   private parseTree: ParseContext;
 
-  constructor(expression: string) {
-    this.expression = expression;
+  constructor(expressiontext: string) {
+    this.expression = expressiontext; // expressiontext.replace(/'/g, '|');
     this.BuildAstTree();
   }
 
@@ -84,7 +84,7 @@ export class EvaluateGeoFencerExpression {
     catch (e) {
       errorCallback(e);
       this.evaluateError = true;
-      this.evaluateErrors = e;
+      this.evaluateErrors = 'EvaluateGeofencerExpression:: ' + e;
       return false;
     }
   }
