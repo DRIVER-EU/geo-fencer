@@ -1,4 +1,6 @@
  <div>
+    <h3><button v-on:click="RefreshTable">
+        <font-awesome-icon :icon="['fas', 'sync-alt']" size="0.5x" /></button> Active rules in geofencer service </h3>
  <b-table
       :items="rulesFired"
       :fields="fields">

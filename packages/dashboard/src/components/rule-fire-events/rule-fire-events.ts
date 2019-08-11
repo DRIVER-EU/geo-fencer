@@ -14,6 +14,7 @@ export class RuleFireEvents extends WidgetBase {
     public rulesFired: RuleFireInfo[] = [];
 
     public fields = [
+        { key: "timstamp", label: "Timestamp"},
         { key: "ruleId", label: "Rule ID"},
         { key: "simItemGuid", label: "Sim ID" },
         { key: "hit", label: "HIT" },
@@ -21,6 +22,10 @@ export class RuleFireEvents extends WidgetBase {
     ];
     constructor() {
         super();
+        this.RefreshTable();
+    }
+
+    public RefreshTable() {
         this.$set(this, "rulesFired", NotificationService.getInstance().rulesFired.queue);
     }
 }
