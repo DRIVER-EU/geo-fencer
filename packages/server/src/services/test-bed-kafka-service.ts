@@ -18,6 +18,8 @@ import { IObjectDeleted } from './../models/avro_generated/eu/driver/model/sim/s
 import { IGeoJSONEnvelope, IFeatureCollection } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 
+import { NamedGeoJsonProcessor } from './../utils/namedGeoJsonProcessor';
+
 /*
 https://github.com/that-coder/kafka-example
 
@@ -125,7 +127,7 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     });
 
     this.adapter.on('error', e => {
-       logService.LogErrorMessage(`Kafka adapter error: ${e}.`);
+      logService.LogErrorMessage(`Kafka adapter error: ${e}.`);
     });
     this.adapter.on('message', (message) => this.HandleMessage(message));
     this.adapter.on('offsetOutOfRange', (err) => logService.LogErrorMessage(`Consumer received an offsetOutOfRange error: ${err}`));
@@ -152,24 +154,28 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
   private HandleMessage(message: IAdapterMessage) {
     // const stringify = (m: string | Object) => typeof m === 'string' ? m : JSON.stringify(m, null, 2);
     // this.logService.LogMessage(`Received  ${stringify(message.key)}: ${stringify(message.value)}`);
-
-    // Check topic name:
-    switch (message.topic) {
-      case this.topicNames.GeoFencerDefinition:
-        // GeoFencer definition (wrapped in GeoJSON)
-        this.emit('GeoFencerDefinitionMsg', message.value as IGeoJSONEnvelope);
-        break;
-      case this.topicNames.SimulationItemTopic:
-        // Simulation Item created or updated
-        this.emit('SimulationItemMsg', message.value as IItem);
-        break;
-      case this.topicNames.SimItemDeleted:
-        // Simulation Item deleted
-        this.emit('ObjectDeletedMsg', message.value as IObjectDeleted);
-        break;
-      default:
-         this.logService.LogMessage(`Received unknown topic '${message.topic}' from kafka bus.`);
-        break;
+    try {
+      // Check topic name:
+      switch (message.topic) {
+        case this.topicNames.GeoFencerDefinition:
+          // GeoFencer definition (wrapped in GeoJSON)
+          const geoJsonMsg: IGeoJSONEnvelope | null = NamedGeoJsonProcessor.fixParseErrors(message.value);
+          this.emit('GeoFencerDefinitionMsg', geoJsonMsg as IGeoJSONEnvelope);
+          break;
+        case this.topicNames.SimulationItemTopic:
+          // Simulation Item created or updated
+          this.emit('SimulationItemMsg', message.value as IItem);
+          break;
+        case this.topicNames.SimItemDeleted:
+          // Simulation Item deleted
+          this.emit('ObjectDeletedMsg', message.value as IObjectDeleted);
+          break;
+        default:
+          this.logService.LogMessage(`Received unknown topic '${message.topic}' from kafka bus.`);
+          break;
+      }
+    } catch (error) {
+        this.logService.LogErrorMessage(`Exception when handling topic '${message.topic}' from kafka bus.`, error);
     }
   }
 
@@ -179,7 +185,7 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
 
   public PublishRuleFired(topicInfo: RuleFired): void {
     // Publish only when connected to KAFKA
-    if (this.connectedToKafka) this.DelayedPublishRuleFired(topicInfo); 
+    if (this.connectedToKafka) this.DelayedPublishRuleFired(topicInfo);
     else this.delayedPublish.enqueue(() => { this.DelayedPublishRuleFired(topicInfo); });
   }
 

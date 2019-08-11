@@ -95,11 +95,13 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
   }
 
   public LoadGeofencerRule(definition: IGeoJSONEnvelope) {
-// For now reset the list (only one definition)
+    // For now reset the list (only one definition)
     // This will instantiate the AST rule validation
     this.logService.LogMessage(`Load geofencer definition.`);
-    this.geoFencerDefintions = [new GeoFencerDefinition(this.logService, definition)];
-
+    if (definition) {
+      const geoFencerDef = new GeoFencerDefinition(this.logService, definition);
+      this.geoFencerDefintions = [ geoFencerDef ];
+    } else this.geoFencerDefintions = [];
   }
 
   private ValidateAgainstAllRules(simItem: IItem, isTestData = false) {
@@ -114,7 +116,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
               this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' changed to has match' : ' changed to has no match'} `);
             }
             if ((hit) || (!hit && !initial)) {
-              const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial);
+              const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial, new Date());
               this.kafkaService.PublishRuleFired(fireInfo);
               this.emit('stateChangeSimulationItem', fireInfo);
             }
