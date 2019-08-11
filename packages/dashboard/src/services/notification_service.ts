@@ -1,6 +1,6 @@
 
 import io from "socket.io-client";
-import { RuleFireInfo } from "./../models/rule_fire_info";
+import { IRuleFireInfo } from "./../models/rule_fire_info";
 import { Queue } from "./../utils/Queue";
 
 export class NotificationService {
@@ -14,11 +14,11 @@ export class NotificationService {
     private static instance: NotificationService;
 
     public readonly websocketUrl = "http://localhost:9995";
-    public rulesFired: Queue<RuleFireInfo>;
+    public rulesFired: Queue<IRuleFireInfo>;
     private socket!: SocketIOClient.Socket;
 
     private constructor() {
-        this.rulesFired = new Queue<RuleFireInfo>();
+        this.rulesFired = new Queue<IRuleFireInfo>();
     }
 
     public connect() {
@@ -34,11 +34,13 @@ export class NotificationService {
     public ruleFired(jsonString: any) {
          const obj = JSON.parse(jsonString);
          try {
-          const x: RuleFireInfo = {
+          const x: IRuleFireInfo = {
+            hit: obj.hit,
+            initial: obj.initial,
             ruleId: obj.ruleId,
             simItemGuid: obj.simItemGuid,
-            hit: obj.hit,
-            initial: obj.initial };
+            timestamp: obj.timestamp,
+             };
           NotificationService.getInstance().rulesFired.enqueue(x);
           // Not more as 30 items in list
           while (NotificationService.getInstance().rulesFired.count > 30) { NotificationService.getInstance().rulesFired.dequeue(); }
