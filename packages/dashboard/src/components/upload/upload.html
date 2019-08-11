@@ -2,8 +2,12 @@
     <div v-if="errorMsg">
         <b-alert show variant="danger" class="mb-2">{{errorMsg}}</b-alert>
     </div>
+    <div v-if="statusMsg">
+            <b-alert show variant="success" class="mb-2">{{statusMsg}}</b-alert>
+        </div>
     <H1>Upload</H1>
-    <input type="checkbox" id="useKafka" v-model="useKafka">Use KAFKA to publish</input>
+    <input type="checkbox" id="useKafka" v-model="useKafka"></input>
+    <label for="useKafka">{{ useKafka ? "Publish to KAFKA (error are logged in logfiles) " : "No KAFKA (apply directly to service, errors are shown in browser)." }}</label>
     <br/>
     <label class="geofencerButton">
         Upload geo-fencer definition
