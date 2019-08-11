@@ -1,5 +1,7 @@
 # Debugging service
 
+The KAFKA docker environment must be running!
+
 #### Geo-fencer service 
 
 Open the "geo-fencer\packages\VisualCodeServer.code-workspace" in visual studio code.  Run in DOS terminal (in the directory "geo-fencer\packages\server") the command "npm run start:debug".
