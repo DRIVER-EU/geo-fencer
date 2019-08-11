@@ -80,7 +80,7 @@ export class ManagementController {
       this.service.SetGeofencerDefinition(json, (useKafka) ? (useKafka) : false);
       return new ResultSetGeofencerDef();
     } catch (e) {
-      throw new BadRequestException('Geojson invalid: ' + e.message);
+      throw new BadRequestException('JSON Geofencer defintion (named geojson) invalid: ' + e.message);
     }
   }
 /*************************************************************************************************************/
@@ -137,6 +137,7 @@ export class ManagementController {
     };
     try {
       const testData = JSON.parse(expression.Item) as IItem;
+      console.log(`|${expression.Expression}|`);
       let evalExpression = new EvaluateGeoFencerExpression(expression.Expression); // Build AST tree
       if (evalExpression.IsValidExpression) {
         // Validate against AST tree
