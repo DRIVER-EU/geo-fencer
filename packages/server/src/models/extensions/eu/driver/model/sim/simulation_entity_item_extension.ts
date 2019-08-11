@@ -42,9 +42,8 @@ export function getSimulationType(simItem: IItem): ObjectType {
 }
 
 export function getForceIdentifier(simItem: IItem): ForceIdentifier {
-    getSimulationType(simItem);
     if (simItem.hasOwnProperty('properties')) {
-        if ((simItem.properties)) {
+        if ((simItem.properties) && (simItem.properties.hasOwnProperty('ForceIdentifier'))) {
             let propValue = simItem.properties['ForceIdentifier'] as string;
             return stringToForceIdentifier(propValue);
         }
