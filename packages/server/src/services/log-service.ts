@@ -15,7 +15,7 @@ TODO Replace by Logging framework or improve
 
 export interface ILogService {
     LogMessage(msg: string): void;
-    LogErrorMessage(msg: string): void;
+    LogErrorMessage(msg: string, ex?: Error): void;
 }
 
 export class LogService implements ILogService {
@@ -29,8 +29,9 @@ export class LogService implements ILogService {
         console.log(msg);
     }
 
-    LogErrorMessage(msg: string) {
+    LogErrorMessage(msg: string, err?: Error) {
         console.error(msg);
+        if (err) console.error(err.message);
     }
 }
 
