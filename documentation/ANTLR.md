@@ -8,7 +8,7 @@ In ' \packages\server' run 'npm run antlr4ts' (only needed when .g4 file changes
 
 ## Rule evaluation
 
-A geofencer fule is parsed with the generated code and an AST tree is generated, in the example below the rule ' ((NAME LIKE '^Truck_[0-9]{1,5}$') OR (NAME = 'TARGET'))  AND ForceIdentifier = 'Opposing' AND PROP['Weight'] > '20'' is converted to the following tree:
+A geofencer fule is parsed with the generated code and an AST tree is generated, in the example below the rule  ((NAME LIKE '^Truck_[0-9]{1,5}$') OR (NAME = 'TARGET'))  AND ForceIdentifier = 'Opposing' AND PROP['Weight'] > '20'  is converted to the following tree:
 
 ![](screenshots/AntlrTreeView.png)
 

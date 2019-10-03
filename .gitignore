@@ -3,3 +3,4 @@ packages/dashboard/node_modules/
 packages/dashboard/dist/
 packages/dashboard/yarn-error.log
 packages/server/dist/
+packages/server/src/antlr/.antlr/cache/

@@ -15,9 +15,9 @@ Each feature within the GeoJSON can contain a rule which shall be monitored by t
 A rule consist of the following elements:
 
 * geometry 
-  * The geometry can be a Point (see also radius property) or a Polygon
+  * See section [Geofencer geometry](documentation/GeofencerGeometry.md)
 * properties
-  * ID => Unique ID for the rule, used when rule fired is reported
+  * ID => Unique ID for the rule, used when rule fired
   * Description => Used for management website and log files
   * GeoFencerRule => See section [Geofencer rule](documentation/GeofencerRule.md)
 

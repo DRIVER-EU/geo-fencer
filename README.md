@@ -1,6 +1,14 @@
 # Geo-fencer service
-The geo-fence service generates kafka topic notifications when a simulated entity matches a rule that is defined in the geo-fencer definition. The geo-fencer definition uses a named GeoJSON format. 
+The geo-fencer service monitors all simulation entities on the KAFKA bus. When the service is provided with a geo-fencer definition a message will be put on KAFKA is a rule is match. A rule consist of a geographic area and a condition. 
 
+# Documentation
+* [Debugging Geofencer Service](documentation/DebuggingGeoFencerService.md)
+* [Rule evaluation with ANTLR](documentation/ANTLR.md)
+* [AVRO schema's](documentation/AvroSchemas.md)
+* [REST management API](documentation/RestManagementInterface.md)
+* [Geofencer definition](documentation/GeofencerDefinition.md)
+* [Geofencer rule](documentation/GeofencerRule.md)
+* [Geofencer geometry](documentation/GeofencerGeometry.md)
 ### Configuration
 
 By default the configuration file ' geofencer-config.json' is used. This can be changed to an other config file with the --config option.
@@ -8,6 +16,22 @@ By default the configuration file ' geofencer-config.json' is used. This can be 
 `Command line option: 'npm run start:prod -- --help'`
 
 
+
+
+# Project layout
+
+* docker: Script to generate an docker image and script to start and manage docker container.
+* documentation: Documentation for project
+* packages\dashboard: Angular web application for monitoring the GeoFencer service (uses an REST interface to communicate with service)
+* packages\server: The typescript GeoFencer service application
+* schemas: The AVRO schema's used on the KAFKA bus
+* TestRestCall: CURL application to test the service REST interface
+
+The directory "packages" contains two Visual Studio Code workspace files.
+
+# REST Interface
+
+The service uses the NEST.JS framework for REST. This is a code-first approach, the swagger (OpenApi def) is generated  from the meta data in the code. When the service is running the auto generated swagger definition can be downloaded (http://localhost:7890/api-json). The WEB client uses this to generate a client interface. 
 
 ## Web interface
 
@@ -26,4 +50,4 @@ In the "Test rule" tab it possible to test a rule. When the rule is invalid the 
 ![](documentation/screenshots/TestRuleExpression.png)
 
 In the "Rule fire events" the last 30 fired rules are shown. Important: the view has no history, it only show the events from the moment the web-application was openend!
-![](documentation/screenshots/RuleFired.png)
+![](documentation/screenshots/RuleFired.png)``
