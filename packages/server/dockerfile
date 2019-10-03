@@ -38,4 +38,4 @@ RUN npm run build
 EXPOSE 7890
 
 # ENTRYPOINT ["/bin/sh"]
-# ENTRYPOINT ["npm", "run", "start:prod"]
+ENTRYPOINT ["npm", "run", "start:prod"]

@@ -18,7 +18,10 @@
     "minor-release": "npm version minor && npm publish && git push --follow-tags",
     "test": "echo \"Error: no test specified\" && exit 1",
     "antlr4ts": "antlr4ts -no-listener -visitor -o src/antlr/generated/ -lib src/antlr/ src/antlr/GeoFencerExpression.g4",
-    "generate-avro": "cd ./../../schemas && GenerateTypeScriptCode.bat"
+    "generate-avro": "cd ./../../schemas && GenerateTypeScriptCode.bat",
+    "docker:build:local": "docker build --tag=geo-fencer .",
+    "docker:build:server": "docker build -t ci.tno.nl/battlelab/geo-fencer .",
+    "docker:build:publish": "docker push ci.tno.nl/battlelab/geo-fencer"
   },
   "repository": {
     "type": "git",

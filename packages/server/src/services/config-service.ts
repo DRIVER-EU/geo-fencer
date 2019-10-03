@@ -14,7 +14,7 @@ The package https://www.npmjs.com/package/nconf is used for this.
 const nconf = require('nconf');
 const Yargs = require('yargs');
 import fs = require('fs');
-import Path = require('path');
+const path = require('path');
 
 // const CONFIG_DIR = Path.join(__dirname, '../config');
 
@@ -48,7 +48,7 @@ export class ConfigService extends EventEmitter implements IConfigService {
         // const cfgFileName= "geofencer-config.json";
         const cfgFileName = 'geofencer-config.json';
 
-        const cfgTopicnamesFile = `${process.cwd()}\\geofencer-topicnames-config.json`;
+        const cfgTopicnamesFile = path.join(process.cwd(), 'geofencer-topicnames-config.json');
 
         nconf
         .argv({
@@ -63,18 +63,18 @@ export class ConfigService extends EventEmitter implements IConfigService {
               }
             }
           })
-        .env()
-        .file('generic', { file: `${process.cwd()}\\${nconf.get('config')}` })
-        .file('topics', { file: cfgTopicnamesFile })
-        .defaults({
-            'kafka:clientid': 'example'
-        });
+        .env({
+          separator: '_', // Replace : with _ since : is not allowed
+          // whitelist: ['']
+        })
+        .file('generic', { file: path.join(process.cwd(), nconf.get('config')) })
+        .file('topics', { file: cfgTopicnamesFile });
 
-        const cfgFile = `${process.cwd()}\\${nconf.get('config')}`;
+        const cfgFile = path.join(process.cwd(), nconf.get('config'));
         console.log(`Use configuration file '${cfgFile}'.`);
 
         try {
-            if (!fs.existsSync(cfgFile)) console.error('Configuration file not found.');
+            if (!fs.existsSync(cfgFile)) console.error(`Configuration file ${cfgFile} not found, fallback to default values (and enviroment var.).`);
           } catch (err) {
 
           }
@@ -102,7 +102,8 @@ export class ConfigService extends EventEmitter implements IConfigService {
             kafkaHost:  nconf.get('kafka:kafkaHost') || 'localhost:3501',
             schemaRegistryUrl: nconf.get('kafka:schemaRegistryUrl') || 'localhost:3502',
             autoRegisterSchemas: nconf.get('kafka:autoRegisterSchemas') || false,
-            kafkaClientId: nconf.get('kafka:clientid') || 'GeoFencerService'
+            kafkaClientId: nconf.get('kafka:clientid') || 'GeoFencerService',
+			schemaFolder: nconf.get('kafka:schemaFolder') ||  `${__dirname}/../../../../../schemas/git-avro-schemas`
         };
         return result;
     }

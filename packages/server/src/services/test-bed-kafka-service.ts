@@ -40,6 +40,7 @@ export interface ITestBedAdapterSettings {
   schemaRegistryUrl: string;
   autoRegisterSchemas: boolean;
   kafkaClientId: string;
+  schemaFolder: string;
 
 }
 
@@ -81,6 +82,7 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
     this.kafkaSettings.autoRegisterSchemas = true; // bypass config; debug
 
     logService.LogMessage(`KAFA setting: Host=${this.kafkaSettings.kafkaHost} Registry=${this.kafkaSettings.schemaRegistryUrl} `);
+	logService.LogMessage(`Kafka schema folder ${this.kafkaSettings.schemaFolder}`);
     logService.LogMessage('KAFKA Topics');
     logService.LogMessage(`- Sim topic: ${this.topicNames.SimulationItemTopic}`);
     logService.LogMessage(`- Sim topic delete: ${this.topicNames.SimItemDeleted}`);
@@ -99,7 +101,7 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
       autoRegisterSchemas: this.kafkaSettings.autoRegisterSchemas,
       // All the schema's in this folder are registered with the filename as topicname (without -value).
       // Normally this would be done by test-bed-admin tool
-      schemaFolder: `${__dirname}/../../../../../schemas/git-avro-schemas`,
+      schemaFolder: this.kafkaSettings.schemaFolder,
       fromOffset: false /* for all consumers: dont get previous messages from KAFKA */,
       consume: [
         { topic: this.topicNames.SimulationItemTopic },

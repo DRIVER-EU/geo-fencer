@@ -6,6 +6,9 @@
     "serve": "vue-cli-service serve --modern",
     "build": "vue-cli-service build --modern",
     "clean": "del-cli dist",
+	"docker:build:local": "docker build -t geo-server-webclient .",
+	"docker:build:webclient": "docker build -t ci.tno.nl/battlelab/geo-fencer-webclient .",
+    "docker:build:publish": "docker push ci.tno.nl/battlelab/geo-fencer-webclient",
     "generate-rest-client": "cd swagger_codegenerator && GenerateCodeWithDocker.bat"
   },
   "dependencies": {
