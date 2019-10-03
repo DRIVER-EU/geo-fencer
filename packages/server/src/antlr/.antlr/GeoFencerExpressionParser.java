@@ -17,24 +17,25 @@ public class GeoFencerExpressionParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, AND=3, OR=4, NOT=5, TRUE=6, FALSE=7, GT=8, GE=9, LT=10, 
-		LE=11, EQ=12, LIKE=13, LPAREN=14, RPAREN=15, PROP_START=16, PROP_END=17, 
-		PROPNAME=18, DECIMAL=19, IDENTIFIER=20, STRING=21, WS=22;
+		LE=11, EQ=12, LIKE=13, IN=14, LPAREN=15, RPAREN=16, PROP_START=17, PROP_END=18, 
+		DECIMAL=19, IDENTIFIER=20, TEXTFIELD=21, WS=22;
 	public static final int
 		RULE_parse = 0, RULE_expression = 1, RULE_propKey = 2, RULE_propValue = 3, 
-		RULE_comparator = 4, RULE_binary = 5, RULE_bool = 6, RULE_arrayofstring = 7;
+		RULE_comparator = 4, RULE_binary = 5, RULE_bool = 6, RULE_arrayoftext = 7;
 	public static final String[] ruleNames = {
 		"parse", "expression", "propKey", "propValue", "comparator", "binary", 
-		"bool", "arrayofstring"
+		"bool", "arrayoftext"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "'['", "','", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", "'>'", 
-		"'>='", "'<'", "'<='", "'='", "'LIKE'", "'('", "')'", "'PROP['", "']'"
+		"'>='", "'<'", "'<='", "'='", "'LIKE'", "'IN'", "'('", "')'", "'PROP['", 
+		"']'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", 
-		"LE", "EQ", "LIKE", "LPAREN", "RPAREN", "PROP_START", "PROP_END", "PROPNAME", 
-		"DECIMAL", "IDENTIFIER", "STRING", "WS"
+		"LE", "EQ", "LIKE", "IN", "LPAREN", "RPAREN", "PROP_START", "PROP_END", 
+		"DECIMAL", "IDENTIFIER", "TEXTFIELD", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -130,11 +131,9 @@ public class GeoFencerExpressionParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class ArrayOfStringsExpressionContext extends ExpressionContext {
-		public ArrayofstringContext arrayofstring() {
-			return getRuleContext(ArrayofstringContext.class,0);
-		}
-		public ArrayOfStringsExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+	public static class TextfieldExpressionContext extends ExpressionContext {
+		public TerminalNode TEXTFIELD() { return getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
+		public TextfieldExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class BinaryExpressionContext extends ExpressionContext {
 		public ExpressionContext leftside;
@@ -155,15 +154,17 @@ public class GeoFencerExpressionParser extends Parser {
 		public TerminalNode DECIMAL() { return getToken(GeoFencerExpressionParser.DECIMAL, 0); }
 		public DecimalExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
-	public static class StringExpressionContext extends ExpressionContext {
-		public TerminalNode STRING() { return getToken(GeoFencerExpressionParser.STRING, 0); }
-		public StringExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-	}
 	public static class BoolExpressionContext extends ExpressionContext {
 		public BoolContext bool() {
 			return getRuleContext(BoolContext.class,0);
 		}
 		public BoolExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ArrayOfTextExpressionContext extends ExpressionContext {
+		public ArrayoftextContext arrayoftext() {
+			return getRuleContext(ArrayoftextContext.class,0);
+		}
+		public ArrayOfTextExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PropExpressionContext extends ExpressionContext {
 		public PropKeyContext propertyKey;
@@ -260,20 +261,29 @@ public class GeoFencerExpressionParser extends Parser {
 				expression(9);
 				}
 				break;
+			case TEXTFIELD:
+				{
+				_localctx = new TextfieldExpressionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(26);
+				match(TEXTFIELD);
+				}
+				break;
 			case PROP_START:
 				{
 				_localctx = new PropExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(26);
-				match(PROP_START);
 				setState(27);
-				((PropExpressionContext)_localctx).propertyKey = propKey();
+				match(PROP_START);
 				setState(28);
-				match(PROP_END);
+				((PropExpressionContext)_localctx).propertyKey = propKey();
 				setState(29);
-				((PropExpressionContext)_localctx).propertyOperator = comparator();
+				match(PROP_END);
 				setState(30);
+				((PropExpressionContext)_localctx).propertyOperator = comparator();
+				setState(31);
 				((PropExpressionContext)_localctx).propertyValue = propValue();
 				}
 				break;
@@ -283,7 +293,7 @@ public class GeoFencerExpressionParser extends Parser {
 				_localctx = new BoolExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(32);
+				setState(33);
 				bool();
 				}
 				break;
@@ -292,7 +302,7 @@ public class GeoFencerExpressionParser extends Parser {
 				_localctx = new IdentifierExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(33);
+				setState(34);
 				match(IDENTIFIER);
 				}
 				break;
@@ -301,26 +311,17 @@ public class GeoFencerExpressionParser extends Parser {
 				_localctx = new DecimalExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(34);
-				match(DECIMAL);
-				}
-				break;
-			case STRING:
-				{
-				_localctx = new StringExpressionContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
 				setState(35);
-				match(STRING);
+				match(DECIMAL);
 				}
 				break;
 			case T__0:
 				{
-				_localctx = new ArrayOfStringsExpressionContext(_localctx);
+				_localctx = new ArrayOfTextExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(36);
-				arrayofstring();
+				arrayoftext();
 				}
 				break;
 			default:
@@ -396,7 +397,7 @@ public class GeoFencerExpressionParser extends Parser {
 		}
 	}
 	public static class PropKeyExpressionContext extends PropKeyContext {
-		public TerminalNode PROPNAME() { return getToken(GeoFencerExpressionParser.PROPNAME, 0); }
+		public TerminalNode TEXTFIELD() { return getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
 		public PropKeyExpressionContext(PropKeyContext ctx) { copyFrom(ctx); }
 	}
 
@@ -408,7 +409,7 @@ public class GeoFencerExpressionParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(52);
-			match(PROPNAME);
+			match(TEXTFIELD);
 			}
 		}
 		catch (RecognitionException re) {
@@ -434,7 +435,7 @@ public class GeoFencerExpressionParser extends Parser {
 		}
 	}
 	public static class PropValueExpressionContext extends PropValueContext {
-		public TerminalNode PROPNAME() { return getToken(GeoFencerExpressionParser.PROPNAME, 0); }
+		public TerminalNode TEXTFIELD() { return getToken(GeoFencerExpressionParser.TEXTFIELD, 0); }
 		public PropValueExpressionContext(PropValueContext ctx) { copyFrom(ctx); }
 	}
 
@@ -446,7 +447,7 @@ public class GeoFencerExpressionParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(54);
-			match(PROPNAME);
+			match(TEXTFIELD);
 			}
 		}
 		catch (RecognitionException re) {
@@ -467,6 +468,7 @@ public class GeoFencerExpressionParser extends Parser {
 		public TerminalNode LE() { return getToken(GeoFencerExpressionParser.LE, 0); }
 		public TerminalNode EQ() { return getToken(GeoFencerExpressionParser.EQ, 0); }
 		public TerminalNode LIKE() { return getToken(GeoFencerExpressionParser.LIKE, 0); }
+		public TerminalNode IN() { return getToken(GeoFencerExpressionParser.IN, 0); }
 		public ComparatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -482,7 +484,7 @@ public class GeoFencerExpressionParser extends Parser {
 			{
 			setState(56);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ) | (1L << LIKE))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ) | (1L << LIKE) | (1L << IN))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -581,20 +583,20 @@ public class GeoFencerExpressionParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ArrayofstringContext extends ParserRuleContext {
-		public List<TerminalNode> STRING() { return getTokens(GeoFencerExpressionParser.STRING); }
-		public TerminalNode STRING(int i) {
-			return getToken(GeoFencerExpressionParser.STRING, i);
+	public static class ArrayoftextContext extends ParserRuleContext {
+		public List<TerminalNode> TEXTFIELD() { return getTokens(GeoFencerExpressionParser.TEXTFIELD); }
+		public TerminalNode TEXTFIELD(int i) {
+			return getToken(GeoFencerExpressionParser.TEXTFIELD, i);
 		}
-		public ArrayofstringContext(ParserRuleContext parent, int invokingState) {
+		public ArrayoftextContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_arrayofstring; }
+		@Override public int getRuleIndex() { return RULE_arrayoftext; }
 	}
 
-	public final ArrayofstringContext arrayofstring() throws RecognitionException {
-		ArrayofstringContext _localctx = new ArrayofstringContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_arrayofstring);
+	public final ArrayoftextContext arrayoftext() throws RecognitionException {
+		ArrayoftextContext _localctx = new ArrayoftextContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_arrayoftext);
 		int _la;
 		try {
 			setState(74);
@@ -606,7 +608,7 @@ public class GeoFencerExpressionParser extends Parser {
 				setState(62);
 				match(T__0);
 				setState(63);
-				match(STRING);
+				match(TEXTFIELD);
 				setState(68);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -616,7 +618,7 @@ public class GeoFencerExpressionParser extends Parser {
 					setState(64);
 					match(T__1);
 					setState(65);
-					match(STRING);
+					match(TEXTFIELD);
 					}
 					}
 					setState(70);
@@ -672,21 +674,21 @@ public class GeoFencerExpressionParser extends Parser {
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3("+
 		"\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3\62\n\3\f\3\16\3\65\13\3\3\4\3"+
 		"\4\3\5\3\5\3\6\3\6\3\7\3\7\3\b\3\b\3\t\3\t\3\t\3\t\7\tE\n\t\f\t\16\tH"+
-		"\13\t\3\t\3\t\3\t\5\tM\n\t\3\t\2\3\4\n\2\4\6\b\n\f\16\20\2\5\3\2\n\17"+
+		"\13\t\3\t\3\t\3\t\5\tM\n\t\3\t\2\3\4\n\2\4\6\b\n\f\16\20\2\5\3\2\n\20"+
 		"\3\2\5\6\3\2\b\t\2Q\2\22\3\2\2\2\4\'\3\2\2\2\6\66\3\2\2\2\b8\3\2\2\2\n"+
 		":\3\2\2\2\f<\3\2\2\2\16>\3\2\2\2\20L\3\2\2\2\22\23\5\4\3\2\23\24\7\2\2"+
-		"\3\24\3\3\2\2\2\25\26\b\3\1\2\26\27\7\20\2\2\27\30\5\4\3\2\30\31\7\21"+
-		"\2\2\31(\3\2\2\2\32\33\7\7\2\2\33(\5\4\3\13\34\35\7\22\2\2\35\36\5\6\4"+
-		"\2\36\37\7\23\2\2\37 \5\n\6\2 !\5\b\5\2!(\3\2\2\2\"(\5\16\b\2#(\7\26\2"+
-		"\2$(\7\25\2\2%(\7\27\2\2&(\5\20\t\2\'\25\3\2\2\2\'\32\3\2\2\2\'\34\3\2"+
-		"\2\2\'\"\3\2\2\2\'#\3\2\2\2\'$\3\2\2\2\'%\3\2\2\2\'&\3\2\2\2(\63\3\2\2"+
-		"\2)*\f\n\2\2*+\5\n\6\2+,\5\4\3\13,\62\3\2\2\2-.\f\t\2\2./\5\f\7\2/\60"+
+		"\3\24\3\3\2\2\2\25\26\b\3\1\2\26\27\7\21\2\2\27\30\5\4\3\2\30\31\7\22"+
+		"\2\2\31(\3\2\2\2\32\33\7\7\2\2\33(\5\4\3\13\34(\7\27\2\2\35\36\7\23\2"+
+		"\2\36\37\5\6\4\2\37 \7\24\2\2 !\5\n\6\2!\"\5\b\5\2\"(\3\2\2\2#(\5\16\b"+
+		"\2$(\7\26\2\2%(\7\25\2\2&(\5\20\t\2\'\25\3\2\2\2\'\32\3\2\2\2\'\34\3\2"+
+		"\2\2\'\35\3\2\2\2\'#\3\2\2\2\'$\3\2\2\2\'%\3\2\2\2\'&\3\2\2\2(\63\3\2"+
+		"\2\2)*\f\n\2\2*+\5\n\6\2+,\5\4\3\13,\62\3\2\2\2-.\f\t\2\2./\5\f\7\2/\60"+
 		"\5\4\3\n\60\62\3\2\2\2\61)\3\2\2\2\61-\3\2\2\2\62\65\3\2\2\2\63\61\3\2"+
-		"\2\2\63\64\3\2\2\2\64\5\3\2\2\2\65\63\3\2\2\2\66\67\7\24\2\2\67\7\3\2"+
-		"\2\289\7\24\2\29\t\3\2\2\2:;\t\2\2\2;\13\3\2\2\2<=\t\3\2\2=\r\3\2\2\2"+
+		"\2\2\63\64\3\2\2\2\64\5\3\2\2\2\65\63\3\2\2\2\66\67\7\27\2\2\67\7\3\2"+
+		"\2\289\7\27\2\29\t\3\2\2\2:;\t\2\2\2;\13\3\2\2\2<=\t\3\2\2=\r\3\2\2\2"+
 		">?\t\4\2\2?\17\3\2\2\2@A\7\3\2\2AF\7\27\2\2BC\7\4\2\2CE\7\27\2\2DB\3\2"+
-		"\2\2EH\3\2\2\2FD\3\2\2\2FG\3\2\2\2GI\3\2\2\2HF\3\2\2\2IM\7\23\2\2JK\7"+
-		"\3\2\2KM\7\23\2\2L@\3\2\2\2LJ\3\2\2\2M\21\3\2\2\2\7\'\61\63FL";
+		"\2\2EH\3\2\2\2FD\3\2\2\2FG\3\2\2\2GI\3\2\2\2HF\3\2\2\2IM\7\24\2\2JK\7"+
+		"\3\2\2KM\7\24\2\2L@\3\2\2\2LJ\3\2\2\2M\21\3\2\2\2\7\'\61\63FL";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
