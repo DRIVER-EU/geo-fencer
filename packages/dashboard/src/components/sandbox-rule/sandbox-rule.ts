@@ -43,6 +43,7 @@ const simItem: string = '{ \n \
 } as any)
 export class SandboxRule extends WidgetBase {
 
+    // tslint:disable-next-line:max-line-length
     public expressionText: string = "((NAME LIKE '^Truck_[0-9]{1,5}$') OR (NAME = 'TARGET'))  AND ForceIdentifier = 'Opposing' AND PROP['Weight'] > '20'";
     public testData: string = simItem;
     public errorMsg: string = "";

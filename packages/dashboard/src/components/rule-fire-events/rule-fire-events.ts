@@ -1,7 +1,7 @@
 import { WidgetBase } from "@csnext/cs-client";
 // tslint:disable-next-line: ordered-imports
 import Component from "vue-class-component";
-import { RuleFireInfo } from "./../../models/rule_fire_info";
+import { IRuleFireInfo } from "./../../models/rule_fire_info";
 import { NotificationService } from "./../../services/notification_service";
 import "./rule-fire-events.css";
 
@@ -11,7 +11,7 @@ import "./rule-fire-events.css";
     template: require("./rule-fire-events.html"),
 } as any)
 export class RuleFireEvents extends WidgetBase {
-    public rulesFired: RuleFireInfo[] = [];
+    public rulesFired: IRuleFireInfo[] = [];
 
     public fields = [
         { key: "timstamp", label: "Timestamp"},
