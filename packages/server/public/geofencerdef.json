@@ -1,7 +1,8 @@
 {
   "properties": {
+    "ID": "SampleGeoFencerService",
     "Title": "Sample Geo Fencer definition file",
-    "ID": "SampleGeoFencerService"
+	"Type": "GeoFencerDefinition"
   },
   "geojson": {
     "type": "FeatureCollection",
@@ -38,7 +39,7 @@
         "properties": {
           "ID": "BridgeHaringvliet",
 		  "Description": "Vehicles to heavy for bailey bridge",
-          "GeoFencerRule": "NAME LIKE '^[1-9]\\d{0,5}$'",
+          "GeoFencerRule": "((NAME LIKE '^Truck_[0-9]{1,5}$') OR (NAME = 'TANK'))  AND ForceIdentifier = 'Opposing' AND PROP['Weight'] > '20'",
           "Radius": 5
         }
       },

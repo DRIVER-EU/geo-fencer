@@ -50,5 +50,34 @@
         "prop1": "value1",
         "prop2": "value2"
     }
+  },
+  { 
+     "guid": "Truck_12",
+    "name": "Truck_12",
+    "owner": "",
+     "location": {
+      "altitude": 0.0,
+      "longitude": 4.254193,
+      "latitude": 52.104876
+    },
+    "orientation": {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 0
+    },
+    "velocity": {
+      "magnitude": 0,
+      "pitch": 0,
+      "yaw": 0
+    },
+    "visibleForParticipant": false,
+    "movable": false,
+    "itemType": {
+	    "subType":"TRUCK"
+	  },
+    "properties": {
+      "ForceIdentifier": "Opposing",
+      "Weight": "23"
+    }
   }
 ]
