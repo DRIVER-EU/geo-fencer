@@ -18,7 +18,7 @@ export class NotificationService implements OnGatewayConnection, OnGatewayDiscon
     wsClients: Client[] = [];
 
     constructor() {
-        console.log('Notification service started');
+        console.log(`Notification service started; listening at port 9995`);
     }
 
     afterInit() {
@@ -48,18 +48,6 @@ export class NotificationService implements OnGatewayConnection, OnGatewayDiscon
 
       }
 
-/*
-
-    @SubscribeMessage('events')
-    findAll(client: Client, data: any): Observable<WsResponse<number>> {
-      return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
-    }
-
-    @SubscribeMessage('identity')
-    async identity(client: Client, data: number): Promise<number> {
-      return data;
-    }
-*/
     public SendOnRuleFired(info: RuleFired) {
         this.Broadcast('ruleFired', info);
     }
