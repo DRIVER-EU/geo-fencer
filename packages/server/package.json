@@ -19,9 +19,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "antlr4ts": "antlr4ts -no-listener -visitor -o src/antlr/generated/ -lib src/antlr/ src/antlr/GeoFencerExpression.g4",
     "generate-avro": "cd ./../../schemas && GenerateTypeScriptCode.bat",
-    "docker:build:local": "docker build --tag=geo-fencer .",
-    "docker:build:server": "docker build -t ci.tno.nl/battlelab/geo-fencer .",
-    "docker:build:publish": "docker push ci.tno.nl/battlelab/geo-fencer"
+    "docker:build": "docker build -t geofencer .",
+    "docker:tag": "docker tag geofencer drivereu/geofencer",
+    "docker:publish": "npm run docker:build && npm run docker:tag && docker push drivereu/geofencer"
   },
   "repository": {
     "type": "git",
@@ -41,7 +41,9 @@
   },
   "homepage": "https://github.com/DRIVER-EU/geo-fencer#readme",
   "dependencies": {
+    "@csnext/cs-layer-server": "^0.0.121",
     "@degordian/avro-to-typescript": "^2.2.3",
+    "@mapbox/togeojson": "^0.16.0",
     "@nestjs/common": "^6.0.4",
     "@nestjs/core": "^6.0.4",
     "@nestjs/platform-express": "^6.0.4",
@@ -51,6 +53,8 @@
     "@turf/nearest-point-to-line": "^6.0.0",
     "@turf/point-to-line-distance": "^6.0.0",
     "@turf/turf": "^5.1.6",
+    "@types/geojson": "^7946.0.7",
+    "@types/mapbox-gl": "^1.5.2",
     "@types/request": "^2.48.1",
     "antlr4ts": "^0.5.0-alpha.3",
     "avsc": "^5.4.11",
