@@ -25,6 +25,7 @@ export class NotificationService {
 
       this.socket = io(this.websocketUrl);
       this.socket.on("connect", () => {
+          // tslint:disable-next-line:no-console
           console.log("Connected");
       });
 
@@ -43,8 +44,13 @@ export class NotificationService {
              };
           NotificationService.getInstance().rulesFired.enqueue(x);
           // Not more as 30 items in list
-          while (NotificationService.getInstance().rulesFired.count > 30) { NotificationService.getInstance().rulesFired.dequeue(); }
-        } catch {}
+          while (NotificationService.getInstance().rulesFired.count > 30) {
+            NotificationService.getInstance().rulesFired.dequeue();
+          }
+        } catch (error) {
+          // tslint:disable-next-line:no-console
+          console.log(`Error: ${error}`);
+        }
     }
 
     public disconnect() {

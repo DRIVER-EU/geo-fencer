@@ -140,9 +140,9 @@ export class TriggerArea {
                     const oldStatus = this.validatedItems[simItem.guid] as ISimItemStatus; // Lookup last status
                     const oldHit = oldStatus.InGeographicArea && oldStatus.IsExpressionValid;
                     const newHit = inArea && ruleMatch;
-                    //if (oldHit !== newHit) {
+                    if (oldHit !== newHit) {
                         callback.OnChangeTrigger(this, simItem, newHit, false);
-                    //}
+                    }
                     const newStatus: ISimItemStatus = {
                         InGeographicArea: inArea,
                         IsExpressionValid: ruleMatch,

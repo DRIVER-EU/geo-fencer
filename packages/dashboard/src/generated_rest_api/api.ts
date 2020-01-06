@@ -1,3 +1,4 @@
+// tslint:disable-next-line:no-reference
 /// <reference path="./custom.d.ts" />
 // tslint:disable
 /**
