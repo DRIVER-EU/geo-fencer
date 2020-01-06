@@ -7,7 +7,7 @@ import { MapboxOptions } from "mapbox-gl";
 import "./assets/example.css";
 import "./assets/sgbo.css";
 import { GeoFencerViewer } from "./components/geofencer-viewer/geofencer-viewer";
-import "./Config";
+import { CS_REST_URL } from "./Config";
 import { MainProject } from "./datasources/MainProject";
 import { biHuntLayerSources } from "./definitions/layer-sources";
 
@@ -22,7 +22,7 @@ LayoutManager.add({
 export const GeoFencerProject: IProject = {
   useSocket: true,
   // tslint:disable-next-line:object-literal-sort-keys
-  socketServerUrl: "http://localhost:3007",
+  socketServerUrl: CS_REST_URL,
   header: {
     breadcrumbs: false,
     dense: false,
@@ -112,9 +112,8 @@ export const GeoFencerProject: IProject = {
                 splitpanel: {
                   direction: "horizontal",
                   elements: [
-                    { size: 25, widgetId: "map_widget" },
                     {
-                      size: 75,
+                      size: 100,
                       splitpanel: {
                         direction: "vertical",
                         disableVerticalScroll: true,
