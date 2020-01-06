@@ -31,7 +31,7 @@ const simItem: string = '{ \n \
 	    "subType":"TRUCK"\n\
 	  },\n\
     "properties": {\n\
-      "ForceIdentifier": "Opposing"\n\
+      "ForceIdentifier": "Opposing",\n\
       "Weight": "15"\n\
     }\n\
   }';

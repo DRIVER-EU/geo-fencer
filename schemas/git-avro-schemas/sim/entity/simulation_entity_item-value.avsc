@@ -260,18 +260,6 @@
       "default": null
     },
     {
-      "name": "userTags",
-      "type": [
-        "null",
-        {
-          "type": "array",
-          "items": "string"
-        }
-      ],
-      "doc": "List of all tags the user provided associated with this item",
-      "default": null
-    },
-    {
       "name": "physicalConnections",
       "type": [
         "null",
@@ -319,7 +307,7 @@
           "values": "string"
         }
       ],
-      "doc": "Metadata for the FeatureCollection in the geojson field.",
+      "doc": "Metadata for Simulation Item.",
       "default": null
     }
   ]
