@@ -99,7 +99,7 @@
         "properties": {
           "ID": "TownSquare",
 		  "Description": "Town square marnehuizen",
-          "GeoFencerRule": "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID LIKE  'TEST2')",
+          "GeoFencerRule": "ID = 'TEST1' AND (NAME = 'TEST2' OR ID LIKE  'TEST2')",
           "Radius": 5
         }
       }

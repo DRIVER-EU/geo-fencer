@@ -1,8 +1,8 @@
-import { IItem, ObjectSubType, VehicleSubType } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 import { IGeoJSONEnvelope, FeatureCollectionType, PolygonType, FeatureType, IPolygon } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 
 export const testItemData: IItem = {
-    guid: 'TEST1',
+    id: 'TEST1',
     name: 'TEST2',
     owner: '',
     location: {
@@ -19,17 +19,11 @@ export const testItemData: IItem = {
       magnitude: 0,
       pitch: 0,
       yaw: 0
-    },
-    visibleForParticipant: false,
-    movable: false,
-    itemType: {
-      subType: VehicleSubType.MOTORCYCLE
     }
-
   };
 
   export const testItemData1: IItem = {
-    guid: 'TEST1',
+    id: 'TEST1',
     name: 'TEST2',
     owner: '',
     location: {
@@ -49,13 +43,7 @@ export const testItemData: IItem = {
       magnitude: 0,
       pitch: 0,
       yaw: 0
-    },
-    visibleForParticipant: false,
-    movable: false,
-    itemType: {
-      subType: ObjectSubType.TOOL
     }
-
   };
 
   export const  geoFencerDef: IGeoJSONEnvelope = {
@@ -157,7 +145,7 @@ export const testItemData: IItem = {
           },
           properties: {
             'ID': 'TNO',
-            'GeoFencerRule': 'GUID = \'TEST1\' AND (NAME = \'TEST2\' OR GUID LIKE  \'TEST2\')',
+            'GeoFencerRule': 'ID = \'TEST1\' AND (NAME = \'TEST2\' OR ID LIKE  \'TEST2\')',
             'Radius': 5
           }
         }

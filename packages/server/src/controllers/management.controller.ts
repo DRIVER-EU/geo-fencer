@@ -106,7 +106,11 @@ export class ManagementController {
       result.Message = `Inserted ${json.length} test items.`;
       return result;
     } catch (e) {
-      throw new Error('Invalid data');
+      console.log(e);
+      switch (e.constructor) {
+        case Error:      throw new Error(`Failed to process the JSON simulation test data ${(<Error>e).message}.`);
+        default:         throw new Error(`Failed to process the JSON simulation test data (no error detail). ${e}`);
+    }
     }
   }
   /*************************************************************************************************************/

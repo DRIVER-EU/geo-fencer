@@ -95,7 +95,7 @@ services:
     
   GeoFencerService:
     build: .\..\packages\server
-    image: geo-fencer
+    image: geofencer
     container_name: GeoFencerService
     hostname: GeoFencerService
     ports:
@@ -115,11 +115,11 @@ services:
             
   GeoFencerServiceWebClient:
     build: .\..\packages\dashboard
-    image: geo-server-webclient
+    image: geofencer-webclient
     container_name: GeoFencerServiceWebClient
     hostname: GeoFencerServiceWebClient
     depends_on:
     - GeoFencerService
     ports:
-      # Web
+      # Web management site on port 7000
       - "7000:80"

@@ -103,7 +103,7 @@ export class ConfigService extends EventEmitter implements IConfigService {
             schemaRegistryUrl: nconf.get('kafka:schemaRegistryUrl') || 'localhost:3502',
             autoRegisterSchemas: nconf.get('kafka:autoRegisterSchemas') || false,
             kafkaClientId: nconf.get('kafka:clientid') || 'GeoFencerService',
-			schemaFolder: nconf.get('kafka:schemaFolder') ||  `${__dirname}/../../../../../schemas/git-avro-schemas`
+			schemaFolder: nconf.get('kafka:schemaFolder') ||  `${__dirname}/../../../../../schemas/external-avro-schemas`
         };
         return result;
     }
@@ -111,7 +111,7 @@ export class ConfigService extends EventEmitter implements IConfigService {
     // Topic names used in this GeoFencer service
     GetTopicnames(): ITopicNames {
         let result: ITopicNames = {
-            SimItemDeleted:  nconf.get('SimItemDeleted') || 'simulation_object_deleted',
+            SimItemDeleted:  nconf.get('SimItemDeleted') || 'simulation_entity_deleted',
             SimulationItemTopic:  nconf.get('SimulationEntityItem') || 'simulation_entity_item',
             GeoFencerDefinition :  nconf.get('GeoFencerDefinition') || 'standard_named_geojson',
             RuleFired:  nconf.get('RuleFired') || 'geofencing_event'

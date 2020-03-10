@@ -1,198 +1,112 @@
-/** WGS84-based standard representation of a location on earth */
+/**
+ * A location is defined as a WGS84-based standard representation of a location on
+ * earth
+ */
 export interface ILocation {
-  /** Latitude in degrees (-90, 90] - 0 is equator */
+  /** In decimal degrees, ranging from [-90, 90] where 0 is the equator */
   latitude: number;
   /**
-   * Longitude in degrees (-180, 180] - 0 is line [geographic north - Greenwich -
-   * geographic south]
+   * In decimal degrees, ranging from (-180, 180] where 0 is the Prime Meridian
+   * (line going through the geographic north, Greenwich, and the geographic south)
    */
   longitude: number;
-  /** Altitude in meters - 0 is surface of WGS84-based ellipsoid */
+  /** Optional in meters, where 0 is the surface of the WGS84-based ellipsoid */
   altitude?: null | undefined | number;
 }
 
 /**
- * WGS84/Aviation-based representation of an orientation on earth - Right-handed
- * item-specific reference system, with in base-setting heading/yaw-axis pointing
- * down (to the centre of the earth), pitch-axis pointing to the right,
- * roll/bank-axis pointing forward
+ * An orientation is defined in the aviation axes conventions representation. It
+ * is a left-handed item-centric reference system, with in default initial state
+ * its heading/yaw-axis pointing up (away from the centre of the WGS84-based
+ * ellipsoid), its pitch-axis pointing to the right, and its roll/bank-axis
+ * pointing forward
  */
 export interface IOrientation {
   /**
-   * Yaw or heading in degrees [0, 360) - 0 is pointing towards geographic north -
-   * yaw of 90 is EAST, yaw of 270 is WEST
+   * In decimal degrees, ranging from [0, 360) where 0 is pointing towards the
+   * geographic north. The yaw value is applied in a clockwise rotation over the
+   * item’s heading/yaw-axis. A yaw value of 90 makes the item face east, while a
+   * yaw of 270 makes it face west
    */
   yaw: number;
   /**
-   * Pitch in degrees (-90, 90] - 0 is perpendicular to line [origin of item -
-   * centre of WGS84-based ellipsoid] - pitch of +45 is 45 degrees pointing
-   * upwards, -45 is 45 degrees pointing downwards
+   * In decimal degrees, ranging from [-90, 90] where 0 is perpendicular to the line
+   * between the item’s location and the centre of the WGS84-based ellipsoid. The
+   * pitch value is applied in a counter-clockwise rotation over the item’s
+   * pitch-axis. A pitch value of 45 makes the item face 45 degrees upwards, while
+   * a pitch of -20 makes it face 20 degrees downwards
    */
   pitch: number;
   /**
-   * Roll or bank in degrees (-180, 180] - 0 is perpendicular to line [origin of
-   * item - centre of WGS84-based ellipsoid] - bank of +45 is 45 degrees roll to
-   * the right, -45 is 45 degrees roll to the left
+   * In decimal degrees, ranging from (-180, 180] where 0 is perpendicular to the
+   * line between the item’s location and the centre of the WGS84-based ellipsoid.
+   * The roll value is applied in a clockwise rotation over the item’s
+   * roll/bank-axis. A roll value of 45 makes the item roll 45 degrees to the
+   * right, while a roll of -50 makes it roll 50 degrees to the left
    */
   roll: number;
 }
 
 /**
- * WGS84/Aviation-based representation of a velocity vector. Right-handed
- * item-specific reference system, with in base-setting heading/yaw-axis pointing
- * down (to the centre of the earth), pitch-axis pointing to the right,
+ * A velocity is defined in the aviation axes conventions representation of a
+ * velocity vector. It is a left-handed item-centric reference system, with in
+ * default initial state its heading/yaw-axis pointing up (away from the centre
+ * of the WGS84-based ellipsoid), its pitch-axis pointing to the right, and its
  * roll/bank-axis pointing forward
  */
 export interface IVelocity {
   /**
-   * Yaw or heading in degrees [0, 360) - 0 is pointing towards geographic north -
-   * yaw of 90 is EAST, yaw of 270 is WEST
+   * In decimal degrees, ranging from [0, 360) where 0 is pointing towards the
+   * geographic north. The yaw value is applied in a clockwise rotation over the
+   * item’s heading/yaw-axis. A yaw value of 90 makes the item face east, while a
+   * yaw of 270 makes it face west
    */
   yaw: number;
   /**
-   * Pitch in degrees (-90, 90] - 0 is perpendicular to line [origin of item -
-   * centre of WGS84-based ellipsoid] - pitch of +45 is 45 degrees pointing
-   * upwards, -45 is 45 degrees pointing downwards
+   * In decimal degrees, ranging from [-90, 90] where 0 is perpendicular to the line
+   * between the item’s location and the centre of the WGS84-based ellipsoid. The
+   * pitch value is applied in a counter-clockwise rotation over the item’s
+   * pitch-axis. A pitch value of 45 makes the item face 45 degrees upwards, while
+   * a pitch of -20 makes it face 20 degrees downwards
    */
   pitch: number;
   /**
-   * Velocity in meter per second [0, inf) - 0 is standing still relative to the
-   * earth
+   * In meter per seconds, ranging from [0, infinity) where 0 is standing still
+   * relative to the earth’s rotation
    */
   magnitude: number;
 }
 
-export enum ObjectSubType {
-  PROP = 'PROP',
-  TOOL = 'TOOL'
-}
-
-/** Information if the item is an object */
-export interface IObjectType {
-  /** Sub type of objects that this item is */
-  subType: ObjectSubType;
-}
-
-export enum PersonSubType {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  UNKNOWN = 'UNKNOWN'
-}
-
-/** Information if the item is a person */
-export interface IPersonType {
-  /** Gender of the person */
-  gender: PersonSubType;
-}
-
-export enum VehicleSubType {
-  CAR = 'CAR',
-  VAN = 'VAN',
-  TRUCK = 'TRUCK',
-  BOAT = 'BOAT',
-  PLANE = 'PLANE',
-  HELICOPTER = 'HELICOPTER',
-  MOTORCYCLE = 'MOTORCYCLE'
-}
-
-/** Information if the item is a vehicle */
-export interface IVehicleType {
-  /** Sub type of vehicles that this item is */
-  subType: VehicleSubType;
-}
-
-export enum EnvironmentSubLabel {
-  FOLIAGE = 'FOLIAGE',
-  ROAD = 'ROAD'
-}
-
-/** Information if the item is labeled as environment */
-export interface IEnvironmentLabel {
-  /** Sub label of environment that this item has */
-  subLabel: EnvironmentSubLabel;
-}
-
-export enum IncidentSubLabel {
-  FIRE = 'FIRE',
-  CRASH = 'CRASH'
-}
-
-/** Information if the item is labeled as incident */
-export interface IIncidentLabel {
-  /** Sub label of incident that this item has */
-  subLabel: IncidentSubLabel;
-}
-
-export enum RescueSubLabel {
-  POLICE = 'POLICE',
-  MEDICAL = 'MEDICAL',
-  FIRE = 'FIRE',
-  SECURITY = 'SECURITY',
-  MILITARY = 'MILITARY'
-}
-
-/** Information if the item is labeled as rescue */
-export interface IRescueLabel {
-  /** Sub label of rescue that this item has */
-  subLabel: RescueSubLabel;
-}
-
 /**
- * Common Simulation Space Item, representing a visual entity inside the
- * simulation world. *Copyright (C) 2017-2018 XVR Simulation B.V., Delft, The
- * Netherlands, Martijn Hendriks <hendriks @ xvrsim.com>. This file is part of
- * DRIVER+ WP923 Test-bed infrastructure project. This file is licensed under the
- * MIT license : https://github.com/DRIVER-EU/avro-schemas/blob/master/LICENSE*
+ * An item is a specific entity that is bound to one position in the world. It
+ * should represent a tangible object, person or vehicle. *Copyright (C)
+ * 2019-2020 XVR Simulation B.V., Delft, The Netherlands, Martijn Hendriks
+ * <hendriks @ xvrsim.com>. This file is licensed under the MIT license :
+ * https://github.com/DRIVER-EU/avro-schemas/blob/master/LICENSE*
  */
 export interface IItem {
-  /** Globally unique identifier for this entity */
-  guid: string;
-  /** Name of this entity */
-  name: string;
-  /** Identifier of the simulator currently responsible for this entity */
-  owner: string;
-  /** Location of this item */
+  /** Unique identifier of the item */
+  id: string;
+  /** Location of the item */
   location: ILocation;
-  /** Orientation of this item */
-  orientation: IOrientation;
-  /** Movement vector of the item, including the magnitude */
-  velocity: IVelocity;
-  /** Indication whether or not this item is visible for all participants */
-  visibleForParticipant: boolean;
-  /** Indication whether or not this item is movable in the simulation world */
-  movable: boolean;
+  /** Optional name of the item */
+  name?: null | undefined | string;
+  /** Optional type of the item */
+  type?: null | undefined | string;
+  /** Optional unique identifier of the connected application owning the item */
+  owner?: null | undefined | string;
   /**
-   * Concrete type of this item - can be of type ObjectType, PersonType or
-   * VehicleType
+   * Optional UNIX Epoch time in milliseconds marking the time the update was
+   * performed
    */
-  itemType?: null | undefined | IObjectType | IPersonType | IVehicleType;
+  timestamp?: null | undefined | number;
   /**
-   * Scenario type of this item - can be of type EnvironmentLabel, IncidentLabel or
-   * RescueLabel
+   * Optional map containing item specific information: key – unique name of the
+   * specific property; value – value of that property
    */
-  scenarioLabel?: null | undefined | IEnvironmentLabel | IIncidentLabel | IRescueLabel;
-  /** List of all tags the user provided associated with this item */
-  userTags?: null | undefined | string[];
-  /**
-   * List of physical connection entities references (represented by their GUIDs)
-   * this item has
-   */
-  physicalConnections?: null | undefined | string[];
-  /**
-   * Reference to the group connection entity (represented by its GUID) this item is
-   * part of
-   */
-  group?: null | undefined | string;
-  /**
-   * Reference to the formation connection entity (represented by its GUID) this
-   * item is part of
-   */
-  formation?: null | undefined | string;
-  /**
-   * Reference to the unit connection entity (represented by its GUID) this item is
-   * part of
-   */
-  unit?: null | undefined | string;
-  /** Metadata for the FeatureCollection in the geojson field. */
-  properties?: null | undefined | { [key: string]: null | undefined | boolean | string | number };
+  tags?: null | undefined | { [key: string]: string };
+  /** Optional orientation of the item */
+  orientation?: null | undefined | IOrientation;
+  /** Optional velocity of the item */
+  velocity?: null | undefined | IVelocity;
 }

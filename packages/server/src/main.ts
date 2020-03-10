@@ -2,6 +2,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+// import { NestApplicationOptions  } from '@nestjs/common';
 
 import { AllExceptionsFilter } from './controllers/allexceptions';
 // Services
@@ -45,15 +46,16 @@ export class GeoFencerServer {
   // Setup NEST.JS REST server
   async StartNestServerAsync(): Promise<NestExpressApplication> {
     // Create the server
-    const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true /* enable preflight cors */ });
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: { origin: true, preflightContinue: true } /* enable preflight cors */ });
     const configService = app.get(GeofencerProvider).ConfigService;
 
     // Add response header to all incomming requests
     // Use express from this
     app.use((_req: any, res: any, next: any) => {
-      res.header('Access-Control-Allow-Origin', '*'); // Disable CORS (not for production)
+      res.header('Access-Control-Allow-Origin', 'http://geofencer-webapp.ras.nl'); // Disable CORS (not for production)
       res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+      res.header('Access-Control-Allow-Credentials', 'true');
       next();
     });
 

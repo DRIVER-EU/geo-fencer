@@ -38,8 +38,10 @@ export class Upload extends WidgetBase {
                            "Geo fencer definition uploaded to server and applied. ";
                         // this.GetRulesFromServer();
                     }).catch((error: Response) => {
-                        this.errorMsg = error.statusText;
-                        error.json().then((json) => this.errorMsg = `${error.statusText}: ${json.errorMsg}`);
+                        this.errorMsg = "Getting error message";
+                        // this.errorMsg = error.statusText;
+                        // error.json().then((json) => this.errorMsg = `${error.statusText}: ${json.errorMsg}`);
+                        error.text().then((body) => this.errorMsg = `Error: ${body}`);
                     });
             }
         };
@@ -58,7 +60,7 @@ export class Upload extends WidgetBase {
                     .then(() => {
                         this.statusMsg = "Simulation items uploaded to server.";
                     }).catch((error) => {
-                        this.errorMsg = error;
+                        error.text().then((body: string) => this.errorMsg = `Error: ${body}`);
                     });
             }
         };

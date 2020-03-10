@@ -13,7 +13,8 @@ export class NotificationService {
     }
     private static instance: NotificationService;
 
-    public readonly websocketUrl = "http://localhost:9995";
+    public readonly websocketUrl = process.env.VUE_APP_NOTIFICATION_SERVICE_URL ?
+       process.env.VUE_APP_NOTIFICATION_SERVICE_URL  : "http://localhost:9995";
     public rulesFired: Queue<IRuleFireInfo>;
     private socket!: SocketIOClient.Socket;
 

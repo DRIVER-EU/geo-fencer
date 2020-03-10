@@ -34,7 +34,7 @@ COPY  . .
 
 RUN npm run build
 
-
+# Management REST interface
 EXPOSE 7890
 
 # ENTRYPOINT ["/bin/sh"]

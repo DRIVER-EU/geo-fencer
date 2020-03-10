@@ -1,5 +1,5 @@
 {
-    "SimItemDeleted": "simulation_object_deleted",
+    "SimItemDeleted": "simulation_entity_deleted",
     "SimulationEntityItem": "simulation_entity_item",
     "GeoFencerDefinition": "standard_named_geojson",
     "RuleFired": "geofencing_event"

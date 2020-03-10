@@ -54,7 +54,7 @@ export class TriggerArea {
         this.runtimeUniqueID = NumberGenerator.GetUniqueNumber();
         this.geoFencerDef = area;
         this.owner = owner;
-        this.owner.LogService.LogMessage(`Creating rule '${this.TriggerAreaId}' and assign ID ${this.runtimeUniqueID})`);
+        this.owner.LogService.LogMessage(`Creating rule '${this.TriggerAreaId}' and assigned ID ${this.runtimeUniqueID}`);
         this.CreateTurfTriggerArea();
         this.CreateTriggerCondition();
         if (!this.ExpressionIsValid) this.owner.LogService.LogErrorMessage(`Rule ${this.runtimeUniqueID} is disabled (rule is not valid).`);
@@ -112,7 +112,7 @@ export class TriggerArea {
                     (error: Error) => {
                         // this.evalExpression.
                         const expressiontext = (this.evalExpression) ? this.evalExpression.GetExpressionText() : '';
-                        this.owner.LogService.LogErrorMessage(`Error ${error.message} in expression "${expressiontext}"`);
+                        this.LogError(`Error ${error.message} in expression "${expressiontext}"`);
                         // this.evalExpression.IsValidExpression is now false
                     },
                     (debugInfo: string) => {
@@ -135,9 +135,9 @@ export class TriggerArea {
             // Validate the rule
             const ruleMatch = this.IsRuleMatch(simItem, debug => evaluatedExpression = debug);
             if (this.ExpressionIsValid /* error in IsRuleMatch? */ && !isTestData) {
-                if (simItem.guid in this.validatedItems) {
+                if (simItem.id in this.validatedItems) {
                     // Already processed simulator Item in the past
-                    const oldStatus = this.validatedItems[simItem.guid] as ISimItemStatus; // Lookup last status
+                    const oldStatus = this.validatedItems[simItem.id] as ISimItemStatus; // Lookup last status
                     const oldHit = oldStatus.InGeographicArea && oldStatus.IsExpressionValid;
                     const newHit = inArea && ruleMatch;
                     if (oldHit !== newHit) {
@@ -148,7 +148,8 @@ export class TriggerArea {
                         IsExpressionValid: ruleMatch,
                         SubstitudedExpression: evaluatedExpression
                     };
-                    this.validatedItems[simItem.guid] = newStatus;
+                    this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' (no hit)`);
+                    this.validatedItems[simItem.id] = newStatus;
                 } else {
                     // Process for the first time
                     const newStatus: ISimItemStatus = {
@@ -156,7 +157,8 @@ export class TriggerArea {
                         IsExpressionValid: ruleMatch,
                         SubstitudedExpression: evaluatedExpression
                     };
-                    this.validatedItems[simItem.guid] = newStatus;
+                    this.validatedItems[simItem.id] = newStatus;
+                    this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' ( hit)`);
                     callback.OnChangeTrigger(this, simItem, inArea && ruleMatch, true);
                 }
             }

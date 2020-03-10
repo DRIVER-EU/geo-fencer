@@ -9,14 +9,14 @@ import { testItemData} from './testdata/testdata'
 
 
 
-let condition = "GUID = 'TEST1' AND (NAME = 'TEST2' OR GUID =  'TEST2' ) AND ObjectType = 'Vehicle'";
+let condition = "ID = 'TEST1' AND (NAME = 'TEST2' OR ID =  'TEST2' ) AND ObjectType = 'Vehicle'";
 console.log(condition);
 let eval1 = new EvaluateGeoFencerExpression(condition);
-const ast = eval1.IsGeoFencerExpressionValid(testItemData,(error : Error) => {
-  console.error("Error in expression (disable rule): "+ error.message);
+const ast = eval1.IsGeoFencerExpressionValid(testItemData, (error: Error) => {
+  console.error('Error in expression (disable rule): ' + error.message);
 });
-*/
 
+*/
 
 /*
 Initial ENTRY point to start GeoFencer service

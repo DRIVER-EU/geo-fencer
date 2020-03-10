@@ -48,10 +48,10 @@ export const simItem = (simItem?: IItem) => {
       return;
     }
     const avro = {
-        properties:  ((simItem) && (simItem.properties)) ? mapToAvro(simItem.properties) : {},
-        guid: simItem.guid,
+        properties:  ((simItem) && (simItem.tags)) ? mapToAvro(simItem.tags) : {},
+        guid: simItem.id,
         name: simItem.name,
-        owner: simItem.owner,  
+        owner: simItem.owner,
     } as { [key: string]: any };
     return avro;
 };

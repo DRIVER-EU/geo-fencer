@@ -11,7 +11,6 @@ export interface IGeoFencingEvent {
   Hit: boolean;
   /** The rule was evaluated for the first time. */
   Initial: boolean;
-
+  /** Timestamp when rule is created. */
   Timestamp: string;
-
 }

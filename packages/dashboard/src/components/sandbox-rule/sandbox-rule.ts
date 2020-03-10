@@ -7,7 +7,7 @@ import "./sandbox-rule.css";
 // Component to test geofencer rules
 
 const simItem: string = '{ \n \
-    "guid": "TEST1",\n\
+    "id": "TEST1",\n\
     "name": "Truck_12",\n\
     "owner": "",\n\
      "location": {\n\
@@ -25,12 +25,8 @@ const simItem: string = '{ \n \
       "pitch": 0,\n\
       "yaw": 0\n\
     },\n\
-    "visibleForParticipant": false,\n\
-    "movable": false,\n\
-    "itemType": {\n\
-	    "subType":"TRUCK"\n\
-	  },\n\
-    "properties": {\n\
+    "type": "vehicle",\n\
+    "tags": {\n\
       "ForceIdentifier": "Opposing",\n\
       "Weight": "15"\n\
     }\n\

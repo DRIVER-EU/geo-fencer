@@ -1,5 +1,5 @@
 
-import { IItem, IObjectType, IPersonType, IVehicleType, ObjectSubType, VehicleSubType } from './../../../../../avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
+import { IItem } from './../../../../../avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
 
 export enum ForceIdentifier {
     Other = 'Other',
@@ -20,31 +20,31 @@ export enum ObjectType {
 // This sucks; no easy way to check if type is IObjectType | IPersonType | IVehicleType
 // Object and Vehicle have only subType as property :!@@
 
-function isObject(simType:  IObjectType | IPersonType | IVehicleType): simType is IObjectType {
-    return (('subType' in simType) && (ObjectSubType[(<IObjectType>simType).subType] != null));
+function isObject(simType: string): boolean {
+    return simType === 'object';
  }
 
- function isPerson(simType:  IObjectType | IPersonType | IVehicleType): simType is IPersonType {
-    return (<IPersonType>simType).gender !== undefined;
+ function isPerson(simType: string): boolean {
+    return simType === 'object';
  }
 
- function isVehicle(simType:  IObjectType | IPersonType | IVehicleType): simType is IVehicleType {
-    return (('subType' in simType) && (VehicleSubType[(<IVehicleType>simType).subType] != null));
+ function isVehicle(simType:  string): boolean {
+    return simType === 'vehicle';
  }
 
 export function getSimulationType(simItem: IItem): ObjectType {
-    if ((simItem) && (simItem.itemType)) {
-        if (isVehicle(simItem.itemType)) return ObjectType.Vehicle;
-        else if (isObject(simItem.itemType)) return ObjectType.Object;
-        else if (isPerson(simItem.itemType)) return ObjectType.Person;
+    if ((simItem) && (simItem.type)) {
+        if (isVehicle(simItem.type)) return ObjectType.Vehicle;
+        else if (isObject(simItem.type)) return ObjectType.Object;
+        else if (isPerson(simItem.type)) return ObjectType.Person;
         else return ObjectType.Invalid;
     } else return ObjectType.Unknown;
 }
 
 export function getForceIdentifier(simItem: IItem): ForceIdentifier {
-    if (simItem.hasOwnProperty('properties')) {
-        if ((simItem.properties) && (simItem.properties.hasOwnProperty('ForceIdentifier'))) {
-            let propValue = simItem.properties['ForceIdentifier'] as string;
+    if (simItem.hasOwnProperty('tags')) {
+        if ((simItem.tags) && (simItem.tags.hasOwnProperty('ForceIdentifier'))) {
+            let propValue = simItem.tags['ForceIdentifier'] as string;
             return stringToForceIdentifier(propValue);
         }
     }

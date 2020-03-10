@@ -6,7 +6,7 @@ import { Logger } from 'node-test-bed-adapter';
 import { ITestBedKafkaService } from './test-bed-kafka-service';
 
 
-import { IObjectDeleted } from './../models/avro_generated/eu/driver/model/sim/simulation_object_deleted-value';
+import { IEntityDeleted } from './../models/avro_generated/eu/driver/model/sim/support/simulation_entity_deleted-value';
 import { IConfigService } from './config-service';
 import { ILogService } from './log-service';
 
@@ -53,30 +53,30 @@ export class SimulationService extends EventEmitter implements ISimulationServic
     this.kafkaService.on('ObjectDeletedMsg', (delObj) => this.onObjectDeleted(delObj));
   }
 
-  private onObjectDeleted(simItem: IObjectDeleted): void {
-    if (!simItem.guid) {
+  private onObjectDeleted(simItem: IEntityDeleted): void {
+    if (!simItem.id) {
       this.logService.LogErrorMessage('Received simulation item without GUID, skip simualtion item.');
       return;
     }
-    this.emit('deleteSimulationItem', simItem.guid);
-    this.simulationItems.delete(simItem.guid);
+    this.emit('deleteSimulationItem', simItem.id);
+    this.simulationItems.delete(simItem.id);
   }
 
   private onSimulationItemTopic(simItem: IItem): void {
-    if (!simItem.guid) {
-      this.logService.LogErrorMessage('Received simulation item without GUID, skip simualtion item.');
+    if (!simItem.id) {
+      this.logService.LogErrorMessage('Received simulation item without ID, skip simualtion item.');
       return;
     }
     // Lookup simulation entity
-    const oldSimulationItem = this.simulationItems.get(simItem.guid);
+    const oldSimulationItem = this.simulationItems.get(simItem.id);
     if (oldSimulationItem) {
       // Update on simulation item
-      this.emit('updateSimulationItem', simItem.guid, simItem, oldSimulationItem);
+      this.emit('updateSimulationItem', simItem.id, simItem, oldSimulationItem);
     } else {
       // New simulation item
-      this.emit('newSimulationItem', simItem.guid, simItem);
+      this.emit('newSimulationItem', simItem.id, simItem);
     }
-    this.simulationItems.set(simItem.guid, simItem);
+    this.simulationItems.set(simItem.id, simItem);
   }
 
   public InjectTestData(items: IItem[]) {

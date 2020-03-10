@@ -111,12 +111,12 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
           // Only called on change
           OnChangeTrigger: (rule: TriggerArea, simItem: IItem, hit: boolean, initial: boolean) => {
             if (initial) {
-              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' has match' : 'has no match'} `);
+              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.id || ''} ${hit ? ' has match' : 'has no match'} `);
             } else {
-              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.guid || ''} ${hit ? ' changed to has match' : ' changed to has no match'} `);
+              this.logService.LogMessage(`Rule ${rule.TriggerAreaId}: Simulator item ${simItem.id || ''} ${hit ? ' changed to has match' : ' changed to has no match'} `);
             }
             if ((hit) || (!hit && !initial)) {
-              const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.guid, hit, initial, new Date());
+              const fireInfo = new RuleFired(rule.TriggerAreaId, simItem.id, hit, initial, new Date());
               this.kafkaService.PublishRuleFired(fireInfo);
               this.emit('stateChangeSimulationItem', fireInfo);
             }

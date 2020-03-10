@@ -29,7 +29,7 @@ import { get } from 'http';
 enum ExpressionProperty {
   Unknown = 'Unknown',
   Name = 'Name',
-  Guid = 'Guid',
+  Id = 'Id',
   ObjectType = 'ObjectType',
   ForceIdentifier = 'ForceIdentifier'
 }
@@ -90,8 +90,8 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
       const propertyValue = (this.visit(ctx._propertyValue));
       let operator = this.GetOperator(ctx._propertyOperator);
       // Chekc if property exist on simulation item
-      if ((this.simItem.properties) && (this.simItem.properties[propertyKey] != null)) {
-        const currentValue = this.simItem.properties[propertyKey] as string;
+      if ((this.simItem.tags) && (this.simItem.tags[propertyKey] != null)) {
+        const currentValue = this.simItem.tags[propertyKey] as string;
 
         switch (operator) {
           case ExpressionOperator.Equals:
@@ -190,7 +190,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
       switch (propertyEnum) {
 
         case ExpressionProperty.Name:
-        case ExpressionProperty.Guid:
+        case ExpressionProperty.Id:
           switch (operator) {
             case ExpressionOperator.Equals:
               if (ctx._rightside instanceof TextfieldExpressionContext) {
@@ -326,7 +326,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
   // Convert property id (string) to enum
   private GetPropertyEnum(propertyName: string): ExpressionProperty {
     if (this.stringEqualsIgnoreCase(propertyName, 'Name')) return ExpressionProperty.Name;
-    else if (this.stringEqualsIgnoreCase(propertyName, 'Guid')) return ExpressionProperty.Guid;
+    else if (this.stringEqualsIgnoreCase(propertyName, 'Id')) return ExpressionProperty.Id;
     else if (this.stringEqualsIgnoreCase(propertyName, 'ObjectType')) return ExpressionProperty.ObjectType;
     else if (this.stringEqualsIgnoreCase(propertyName, 'ForceIdentifier')) return ExpressionProperty.ForceIdentifier;
     else return ExpressionProperty.Unknown;
@@ -371,9 +371,9 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
           return regexp.test(currentValue);
         }
         break;
-      case ExpressionProperty.Guid:
+      case ExpressionProperty.Id:
         if (operator === ExpressionOperator.Equals) {
-          const currentValue = this.simItem.guid || '';
+          const currentValue = this.simItem.id || '';
           this.substitutedExpression += `"${currentValue}" = "${propertyValue}"`;
           return this.stringEqualsIgnoreCase(currentValue, propertyValue);
         }
