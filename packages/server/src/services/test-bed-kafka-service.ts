@@ -1,6 +1,6 @@
 import { Query } from '@nestjs/common';
 import { EventEmitter } from 'events';
-import { TestBedAdapter, Logger, LogLevel, IAdapterMessage, ProduceRequest } from 'node-test-bed-adapter';
+import { TestBedAdapter, IAdapterMessage, ProduceRequest } from 'node-test-bed-adapter';
 import { geoFencerDef } from './../testdata/testdata';
 import { RuleFired } from './../models/rest/rest-models';
 
@@ -14,7 +14,6 @@ import { ILogService } from './log-service';
 
 // AVRO kafka schema's
 import { IItem } from './../models/avro_generated/eu/driver/model/sim/entity/simulation_entity_item-value';
-import { IEntityDeleted } from './../models/avro_generated/eu/driver/model/sim/support/simulation_entity_deleted-value';
 import { IGeoJSONEnvelope, IFeatureCollection } from './../models/avro_generated/eu/driver/model/geojson/standard_named_geojson-value';
 import { QueueScheduler } from 'rxjs/internal/scheduler/QueueScheduler';
 
@@ -47,8 +46,6 @@ export interface ITestBedAdapterSettings {
 export interface ITestBedKafkaService {
   // Fires when a simulator 'Item' is published (by external party) on KAFKA bus (created or updated)
   on(event: 'SimulationItemMsg', listener: (simItem: IItem) => void): this;
-  // Fires when a simulator 'Item' is removed from KAFKA bus (by external party)
-  on(event: 'ObjectDeletedMsg', listener: (simItem: IEntityDeleted) => void): this;
   // Fired when a GeoFencerDefinitionMsg is published (by external party) on KAFKA bus.
   on(event: 'GeoFencerDefinitionMsg', listener: (geoFencerDefinition: IGeoJSONEnvelope) => void): this;
 
@@ -67,7 +64,6 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
   private kafkaSettings: ITestBedAdapterSettings;
   private topicNames: ITopicNames;
   private adapter: TestBedAdapter;
-  private log = Logger.instance;
   private delayedPublish: TaskQueue = new TaskQueue();
   private connectedToKafka: boolean = false;
 
@@ -83,15 +79,13 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
 
     logService.LogMessage('Load sequence config parameters: first environment variable, else if not found then config file value and then hardcoded value (if not in config) ');
     logService.LogMessage(`KAFA setting: Host=${this.kafkaSettings.kafkaHost} Registry=${this.kafkaSettings.schemaRegistryUrl} `);
-	  logService.LogMessage(`Kafka schema folder ${this.kafkaSettings.schemaFolder}`);
+    logService.LogMessage(`Kafka schema folder ${this.kafkaSettings.schemaFolder}`);
     logService.LogMessage('KAFKA Topics');
     logService.LogMessage(`- Sim topic: ${this.topicNames.SimulationItemTopic}`);
-    logService.LogMessage(`- Sim topic delete: ${this.topicNames.SimItemDeleted}`);
     logService.LogMessage(`- Geofencer definition: ${this.topicNames.GeoFencerDefinition}`);
     logService.LogMessage(`- Geofencer notification: ${this.topicNames.RuleFired}`);
 
     logService.LogMessage(`The KAFKA adapter will wait till this topic schemas are registered`);
-    
     // The topic name is mapped to the AVRO schema based on a naming convention (e.g. standard_named_geojson -> standard_named_geojson-value.json)
     // When a topic is mapped to a avro schema manual, it looks lik the node.js adapter doesn't use the correct serialiser / deserializer
     this.adapter = new TestBedAdapter({
@@ -108,24 +102,18 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
       fromOffset: false /* for all consumers: dont get previous messages from KAFKA */,
       consume: [
         { topic: this.topicNames.SimulationItemTopic },
-        { topic: this.topicNames.SimItemDeleted },
         { topic: this.topicNames.RuleFired },
         { topic: this.topicNames.GeoFencerDefinition },
       ],
       produce: [
         this.topicNames.SimulationItemTopic,
-        this.topicNames.SimItemDeleted,
         this.topicNames.RuleFired,
         this.topicNames.GeoFencerDefinition
-      ],
-      logging: {
-        logToConsole: LogLevel.Info,
-        logToKafka: LogLevel.Warn,
-      },
+      ]
     });
 
     this.adapter.on('ready', () => {
-      this.log.info(`Connected to Kafka Server '${this.kafkaSettings.kafkaHost}'. `);
+      this.logService.LogMessage(`Connected to Kafka Server '${this.kafkaSettings.kafkaHost}'. `);
       this.logService.LogMessage('Start publishing messages to KAFKA');
       this.connectedToKafka = true;
       this.delayedPublish.start();
@@ -171,10 +159,6 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
           // Simulation Item created or updated
           this.emit('SimulationItemMsg', message.value as IItem);
           break;
-        case this.topicNames.SimItemDeleted:
-          // Simulation Item deleted
-          this.emit('ObjectDeletedMsg', message.value as IEntityDeleted);
-          break;
         default:
           this.logService.LogMessage(`Received unknown topic '${message.topic}' from kafka bus.`);
           break;
@@ -195,13 +179,19 @@ export class TestBedKafkaService extends EventEmitter implements ITestBedKafkaSe
   }
 
   private DelayedPublishRuleFired(topicInfo: RuleFired) {
+    // Fix kafka serialize problem
+    const json = JSON.stringify(topicInfo);
+    const obj = JSON.parse(json);
+
     const payloads: ProduceRequest[] = [
       {
         topic: this.topicNames.RuleFired,
-        messages: topicInfo,
+        messages: obj,
         attributes: 1, // Gzip
       },
     ];
+
+
     this.logService.LogMessage(`Try to publish rule fired messages to KAFKA on topic ${this.topicNames.RuleFired}`);
     // When publishing the message on KAFKA the message will do a roundtrip (will also be received by this service)
     this.adapter.send(payloads, (error, data) => {

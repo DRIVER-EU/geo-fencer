@@ -5,22 +5,23 @@ import { ApiModelProperty } from '@nestjs/swagger';
 export class RuleFired {
 
     constructor(ruleId: string, simItemGuid: string, hit: boolean, initial: boolean, timestamp: Date ) {
-        this.ruleId = ruleId;
-        this.simItemGuid = simItemGuid;
-        this.hit = hit;
-        this.initial = initial;
+        this.RuleId = ruleId;
+        this.SimItemEntityId = simItemGuid;
+        this.Hit = hit as boolean;
+        this.Initial = initial as boolean;
+        this.Timestamp = timestamp;
     }
 
     @ApiModelProperty({ required: true })
-    public ruleId: string;
+    public RuleId: string;
     @ApiModelProperty({ required: true })
-    public simItemGuid: string;
+    public SimItemEntityId: string;
     @ApiModelProperty({ required: true })
-    public hit: boolean;
+    public Hit: boolean;
     @ApiModelProperty({ required: true })
-    public initial: boolean;
+    public Initial: boolean;
     @ApiModelProperty({type: 'string', format: 'date-time', example: '2018-11-21T06:20:32.232Z'})
-    public timestamp: Date;
+    public Timestamp: Date;
 }
 export class GeoFencerRule {
 

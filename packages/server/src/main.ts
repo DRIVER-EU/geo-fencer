@@ -52,7 +52,15 @@ export class GeoFencerServer {
     // Add response header to all incomming requests
     // Use express from this
     app.use((_req: any, res: any, next: any) => {
-      res.header('Access-Control-Allow-Origin', 'http://geofencer-webapp.ras.nl'); // Disable CORS (not for production)
+      const whitelist = [
+        'http://geofencer-webapp.ras.nl',
+        'http://127.0.0.1:7890',
+      ];
+      const origin = _req.headers.origin;
+      if (whitelist.indexOf(origin) > -1) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+      }
+      // res.header('Access-Control-Allow-Origin', 'http://geofencer-webapp.ras.nl'); // Disable CORS (not for production)
       res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.header('Access-Control-Allow-Credentials', 'true');

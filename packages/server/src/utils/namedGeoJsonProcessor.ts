@@ -74,8 +74,7 @@ export abstract class NamedGeoJsonProcessor {
     }
 
 
-    private static convertGeometry(geometry: any): any // IPoint | ILineString | IMultiLineString | IPolygon | IMultiPolygon {
-    {
+    private static convertGeometry(geometry: any): any { // IPoint | ILineString | IMultiLineString | IPolygon | IMultiPolygon {
          if (geometry.hasOwnProperty('eu.driver.model.geojson.Polygon')) {
            return geometry['eu.driver.model.geojson.Polygon'] as IPolygon;
          } else if (geometry.hasOwnProperty('eu.driver.model.geojson.Point')) {

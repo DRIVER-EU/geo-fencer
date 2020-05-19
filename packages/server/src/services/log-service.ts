@@ -1,8 +1,5 @@
-import { Logger } from "node-test-bed-adapter/dist/lib/logger/logger";
-
-/* 
-
-Basic service for logging. 
+/*
+Basic service for logging.
 
 In the future logging must be specified to go to file, websocket, console, kafka
 
@@ -20,7 +17,7 @@ export interface ILogService {
 
 export class LogService implements ILogService {
 
-    private logKafka = Logger.instance;
+   //  private logKafka = Logger.instance;
 
     constructor() {
     }

@@ -98,8 +98,13 @@ export class TriggerArea {
             (this.evalExpression.IsValidExpression /* no parse error in expression ? */);
     }
 
+    private isEmpty(text: string) {
+        return (!text || 0 === text.length);
+    }
+
     private CreateTriggerCondition() {
-        const rule = this.geoFencerDef.properties[this.PropertyNameRule] as string;
+        let rule = this.geoFencerDef.properties[this.PropertyNameRule] as string;
+        if (this.isEmpty(rule)) rule = 'true'; // Empty expression will not work
         // A slash symbol '/' is not a special character, but in JavaScript it is used to open and close the regexp
         console.log(rule);
         if (rule) {
@@ -132,14 +137,14 @@ export class TriggerArea {
             // Check if sim Item is in geographic area
             const inArea = this.IsItemInGeographicArea(simItem);
             let evaluatedExpression = '';
-            // Validate the rule
             const ruleMatch = this.IsRuleMatch(simItem, debug => evaluatedExpression = debug);
+            // Validate the rule
             if (this.ExpressionIsValid /* error in IsRuleMatch? */ && !isTestData) {
                 if (simItem.id in this.validatedItems) {
                     // Already processed simulator Item in the past
                     const oldStatus = this.validatedItems[simItem.id] as ISimItemStatus; // Lookup last status
                     const oldHit = oldStatus.InGeographicArea && oldStatus.IsExpressionValid;
-                    const newHit = inArea && ruleMatch;
+                    const newHit: boolean = inArea && ruleMatch;
                     if (oldHit !== newHit) {
                         callback.OnChangeTrigger(this, simItem, newHit, false);
                     }
@@ -148,7 +153,7 @@ export class TriggerArea {
                         IsExpressionValid: ruleMatch,
                         SubstitudedExpression: evaluatedExpression
                     };
-                    this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' (no hit)`);
+                    // this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' (no hit)`);
                     this.validatedItems[simItem.id] = newStatus;
                 } else {
                     // Process for the first time
@@ -158,8 +163,9 @@ export class TriggerArea {
                         SubstitudedExpression: evaluatedExpression
                     };
                     this.validatedItems[simItem.id] = newStatus;
-                    this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' ( hit)`);
-                    callback.OnChangeTrigger(this, simItem, inArea && ruleMatch, true);
+                    // this.owner.LogService.LogMessage(`====> Stored'${simItem.id}' ( hit)`);
+                    const hit: boolean =  (inArea && ruleMatch);
+                    callback.OnChangeTrigger(this, simItem, hit, true);
                 }
             }
         }

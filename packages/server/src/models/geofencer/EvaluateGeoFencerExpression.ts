@@ -78,7 +78,7 @@ export class EvaluateGeoFencerExpression {
         const evaluateExpression = new GeoFencerExpressionVisitorImpl(itemSim);
         const result = evaluateExpression.visit(this.parseTree);
         if (debugCallback) debugCallback(evaluateExpression.SubstitutedExpression);
-        return result;
+        return JSON.parse(result) as boolean;
       } else throw new Error('No AST tree; incorrect expression');
     }
     catch (e) {

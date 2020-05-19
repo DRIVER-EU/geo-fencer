@@ -6,7 +6,7 @@ import { Logger } from 'node-test-bed-adapter';
 import { ITestBedKafkaService } from './test-bed-kafka-service';
 
 
-import { IEntityDeleted } from './../models/avro_generated/eu/driver/model/sim/support/simulation_entity_deleted-value';
+
 import { IConfigService } from './config-service';
 import { ILogService } from './log-service';
 
@@ -50,16 +50,6 @@ export class SimulationService extends EventEmitter implements ISimulationServic
   private assignKafkaService(service: ITestBedKafkaService): void {
     this.kafkaService = service;
     this.kafkaService.on('SimulationItemMsg', (simObj) => this.onSimulationItemTopic(simObj));
-    this.kafkaService.on('ObjectDeletedMsg', (delObj) => this.onObjectDeleted(delObj));
-  }
-
-  private onObjectDeleted(simItem: IEntityDeleted): void {
-    if (!simItem.id) {
-      this.logService.LogErrorMessage('Received simulation item without GUID, skip simualtion item.');
-      return;
-    }
-    this.emit('deleteSimulationItem', simItem.id);
-    this.simulationItems.delete(simItem.id);
   }
 
   private onSimulationItemTopic(simItem: IItem): void {

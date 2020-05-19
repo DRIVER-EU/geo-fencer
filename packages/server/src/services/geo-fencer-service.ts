@@ -71,7 +71,7 @@ export class GeoFencerService extends EventEmitter implements IGeoFencerService 
  * @param oldSimItem The simulation object before the update
  */
   private onUpdateSimulationItem(guid: String, simItem: IItem, oldSimItem: IItem) {
-    this.logService.LogMessage(`Received update simulation object: ${guid}`);
+    // this.logService.LogMessage(`Received update simulation object: ${guid}`);
     this.ValidateAgainstAllRules(simItem);
   }
 

@@ -294,7 +294,7 @@ export class GeoFencerExpressionVisitorImpl extends AbstractParseTreeVisitor<any
     this.substitutedExpression = '';
     let result = super.visit(ctx.expression());
     this.substitutedExpression += '=> ' + result;
-    console.log(this.substitutedExpression);
+    // console.log(this.substitutedExpression);
     return result;
   }
 
