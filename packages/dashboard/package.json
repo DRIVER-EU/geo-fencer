@@ -26,7 +26,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.16",
     "chroma-js": "^2.0.3",
-    "class-transformer": "^0.2.0",
+    "class-transformer": "^0.3.1",
     "core-js": "^2.6.5",
     "date-fns": "^1.30.1",
     "es6-promise": "^4.2.6",
