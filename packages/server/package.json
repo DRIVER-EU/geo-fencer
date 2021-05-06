@@ -74,7 +74,7 @@
     "socketio": "^1.0.0",
     "swagger-ui-express": "^4.0.2",
     "typescript-task-queue": "^1.0.4",
-    "underscore": "^1.9.1"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.25",
